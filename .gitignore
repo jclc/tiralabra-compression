@@ -33,3 +33,6 @@ build/
 Build/
 *-build/
 *-Build/
+
+# Project files
+*.user
