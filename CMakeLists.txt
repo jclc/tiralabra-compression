@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 option(MAKE_TESTS "Enable unit tests" ON)
 
-include_directories("include")
+include_directories(include)
 
 set(SOURCES
 	src/main.cpp
