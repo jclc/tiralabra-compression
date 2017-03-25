@@ -1,8 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-
-const int BUFFER_SIZE = 256;
+#include "input.hpp"
+#include "output.hpp"
 
 int main(int argc, char** argv) {
 	std::string inFileName = "";
@@ -35,6 +35,22 @@ int main(int argc, char** argv) {
 	if (inFileName == "") {
 		std::cerr << "No input file specified" << std::endl;
 		return EXIT_FAILURE;
+	}
+
+	Input input;
+	if (!input.openFile(inFileName)) {
+		std::cerr << "Error opening file " << inFileName << std::endl;
+		return EXIT_FAILURE;
+	}
+
+	if (outFileName == "") {
+		StdOutput output;
+		input.compress();
+		input.write(output);
+	} else {
+		FileOutput output;
+		input.compress();
+		input.write(output);
 	}
 
 	return EXIT_SUCCESS;

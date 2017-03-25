@@ -1,20 +1,31 @@
+#ifndef OUTPUT_HPP
+#define OUTPUT_HPP
+
 #include <string>
+#include <stdio.h>
+
+const unsigned long WRITE_BUFFER_SIZE = 1024;
 
 class Output {
 public:
 	virtual bool openFile(std::string& fileName) {}
-	virtual void write(const char* data, int bufferSize) = 0;
+	virtual void write(const char* data, unsigned long bufferSize) = 0;
 };
 
 class FileOutput: public Output {
 public:
 	FileOutput();
-	bool openFile(std::string& fileName);
-	void write(const char *data, int bufferSize);
+	~FileOutput();
+	virtual bool openFile(std::string& fileName) override;
+	virtual void write(const char* data, unsigned long bufferSize) override;
+private:
+	FILE* filePointer;
 };
 
 class StdOutput: public Output {
 public:
-	StdOutput();
-	void write(const char *data, int bufferSize);
+	StdOutput() {}
+	virtual void write(const char* data, unsigned long bufferSize) override;
 };
+
+#endif /* OUTPUT_HPP */
