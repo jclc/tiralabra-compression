@@ -10,7 +10,8 @@ Input::Input() {
 }
 
 Input::~Input() {
-	fclose(filePointer);
+	if (filePointer)
+		fclose(filePointer);
 	free(outBuffer);
 }
 
