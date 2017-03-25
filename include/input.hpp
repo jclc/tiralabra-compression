@@ -8,6 +8,7 @@
 class Input {
 public:
 	Input();
+	~Input();
 	bool openFile(std::string& fileName);
 	void compress();
 	bool write(Output& out);

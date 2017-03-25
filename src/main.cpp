@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <memory>
 #include "input.hpp"
 #include "output.hpp"
 
@@ -43,15 +44,20 @@ int main(int argc, char** argv) {
 		return EXIT_FAILURE;
 	}
 
+	std::unique_ptr<Output> output;
+
 	if (outFileName == "") {
-		StdOutput output;
-		input.compress();
-		input.write(output);
+		output = std::unique_ptr<Output>(new StreamOutput());
 	} else {
-		FileOutput output;
-		input.compress();
-		input.write(output);
+		output = std::unique_ptr<Output>(new FileOutput());
+		if (!(*output).openFile(outFileName)) {
+			std::cerr << "Cannot write to file " << outFileName << std::endl;
+			return EXIT_FAILURE;
+		}
 	}
+
+	input.compress();
+	input.write(*output);
 
 	return EXIT_SUCCESS;
 }

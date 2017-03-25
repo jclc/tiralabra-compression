@@ -18,9 +18,9 @@ bool FileOutput::openFile(std::string& fileName) {
 }
 
 void FileOutput::write(const char* data, unsigned long bufferSize) {
-
+	fwrite(data, sizeof(char), bufferSize, filePointer);
 }
 
-void StdOutput::write(const char* data, unsigned long bufferSize) {
+void StreamOutput::write(const char* data, unsigned long bufferSize) {
 	printf("%.*s", bufferSize, data);
 }

@@ -22,9 +22,9 @@ private:
 	FILE* filePointer;
 };
 
-class StdOutput: public Output {
+class StreamOutput: public Output {
 public:
-	StdOutput() {}
+	StreamOutput() {}
 	virtual void write(const char* data, unsigned long bufferSize) override;
 };
 

@@ -8,6 +8,11 @@ Input::Input() {
 	outBuffer = nullptr;
 }
 
+Input::~Input() {
+	fclose(filePointer);
+	free(outBuffer);
+}
+
 bool Input::openFile(std::string& fileName) {
 	filePointer = fopen(fileName.c_str(), "r");
 	if (!filePointer)
