@@ -6,6 +6,7 @@ Input::Input() {
 	fileSize = 0;
 	outBufferSize = 0;
 	outBuffer = nullptr;
+	opmode = UNKNOWN;
 }
 
 Input::~Input() {
@@ -22,10 +23,26 @@ bool Input::openFile(std::string& fileName) {
 	fileSize = ftell(filePointer);
 	fseek(filePointer, 0, SEEK_SET);
 
+	char header[32];
+	if (fileSize >= 32) {
+		fread(header, sizeof(char), 32, filePointer);
+		if (memcmp(header, "JCLCTIRA", 8) == 0) {
+			// Found a compressed file
+			opmode = DECOMPRESS;
+			memccpy(&originalSize, header + 8, 1, sizeof(unsigned long));
+			memccpy(&dataSegmentLoc, header + 16, 1, sizeof(unsigned long));
+			memccpy(&dictionaryLoc, header + 24, 1, sizeof(unsigned long));
+		} else {
+			opmode = COMPRESS;
+		}
+	} else {
+		opmode = COMPRESS;
+	}
+
 	return true;
 }
 
-void Input::compress() {
+void Input::operate() {
 	outBufferSize = 32;
 	outBuffer = (char*) malloc(sizeof(char) * outBufferSize);
 	/* Write header
@@ -36,10 +53,11 @@ void Input::compress() {
 	 * 24-31     Dictionary start location
 	 */
 	memcpy(outBuffer, "JCLCTIRA", 8);
-	unsigned long us = 1;
-	unsigned long das = 512;
-	unsigned long dis = 4096;
-	memcpy(outBuffer + 8, &us, 8);
+	// Temporary
+	unsigned long os = fileSize;
+	unsigned long das = 512UL;
+	unsigned long dis = 4096UL;
+	memcpy(outBuffer + 8, &os, 8);
 	memcpy(outBuffer + 16, &das, 8);
 	memcpy(outBuffer + 24, &dis, 8);
 
