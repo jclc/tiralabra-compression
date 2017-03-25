@@ -10,6 +10,7 @@ class Output {
 public:
 	virtual bool openFile(std::string& fileName) {}
 	virtual void write(const char* data, unsigned long bufferSize) = 0;
+	virtual unsigned long getWriteBufferSize() {return WRITE_BUFFER_SIZE;}
 };
 
 class FileOutput: public Output {

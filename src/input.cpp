@@ -26,11 +26,28 @@ bool Input::openFile(std::string& fileName) {
 }
 
 void Input::compress() {
-	outBufferSize = 8;
-	outBuffer = (char*) malloc(sizeof(char) * 8);
-	strcpy(outBuffer, "JCLCTIRA");
+	outBufferSize = 32;
+	outBuffer = (char*) malloc(sizeof(char) * outBufferSize);
+	/* Write header
+	 * <Bytes>   <Content>
+	 * 0-7       Magic numbers
+	 * 8-15      Original size (unsigned long)
+	 * 16-23     Data segment start location
+	 * 24-31     Dictionary start location
+	 */
+	memcpy(outBuffer, "JCLCTIRA", 8);
+	unsigned long us = 1;
+	unsigned long das = 512;
+	unsigned long dis = 4096;
+	memcpy(outBuffer + 8, &us, 8);
+	memcpy(outBuffer + 16, &das, 8);
+	memcpy(outBuffer + 24, &dis, 8);
+
 }
 
 bool Input::write(Output& out) {
-	out.write(outBuffer, outBufferSize);
+	unsigned long wbSize = out.getWriteBufferSize();
+	for (unsigned int i = 0; i < outBufferSize; i += wbSize) {
+		out.write(outBuffer + i, std::min(wbSize, outBufferSize - i));
+	}
 }
