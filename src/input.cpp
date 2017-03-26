@@ -55,13 +55,19 @@ void Input::operate() {
 	 */
 	memcpy(outBuffer, "JCLCTIRA", 8);
 	// Temporary
-	unsigned long os = fileSize;
 	unsigned long das = 512UL;
 	unsigned long dis = 4096UL;
-	memcpy(outBuffer + 8, &os, 8);
+	memcpy(outBuffer + 8, &fileSize, 8);
 	memcpy(outBuffer + 16, &das, 8);
 	memcpy(outBuffer + 24, &dis, 8);
 
+}
+
+void Input::enlargeBuffer() {
+	if (outBufferSize == 0)
+		outBufferSize = 1;
+	outBufferSize *= 2;
+	outBuffer = (char*) realloc(outBuffer, sizeof(char) * outBufferSize);
 }
 
 bool Input::write(Output& out) {

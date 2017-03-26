@@ -4,7 +4,8 @@ This repository holds a data structures-related university project. Course-relat
 
 ## Requirements
 
-* GCC 4.4 or later
+* GCC 4.4/Clang 3.3 or newer
+* CMake 3.1 or newer
 * Google Test for tests (optional)
 
 ## Building
