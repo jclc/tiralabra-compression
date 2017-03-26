@@ -21,17 +21,23 @@ int main(int argc, char** argv) {
 				std::cerr << "Too many arguments: " << argv[i] << std::endl;
 				return EXIT_FAILURE;
 			}
-		} else if (argv[i][1] != '\0') {
-			switch (argv[i][1]) {
-			case 'b':
-				benchmark = true;
-				break;
-			case 'v':
-				verbose = true;
-				break;
-			default:
-				std::cerr << "Unknown option -" << argv[i][1] << std::endl;
-				return EXIT_FAILURE;
+		} else {
+			// Iterate through all short opts in a single argument
+			// eg. -vb -> use options v and b
+			int j = 1;
+			while ((argv[i][j] != '\0')) {
+				switch (argv[i][j]) {
+				case 'b':
+					benchmark = true;
+					break;
+				case 'v':
+					verbose = true;
+					break;
+				default:
+					std::cerr << "Unknown option -" << argv[i][1] << std::endl;
+					return EXIT_FAILURE;
+				}
+				++j;
 			}
 
 		}
