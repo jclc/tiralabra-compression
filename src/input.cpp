@@ -1,11 +1,14 @@
 #include "input.hpp"
 #include <string.h>
+#include <cstdint>
 
 Input::Input() {
 	filePointer = nullptr;
 	fileSize = 0;
 	outBufferSize = 0;
 	outBuffer = nullptr;
+	dataSegmentLoc = 0UL;
+	dictionaryLoc = 0UL;
 	opmode = UNKNOWN;
 }
 
@@ -24,15 +27,15 @@ bool Input::openFile(std::string& fileName) {
 	fileSize = ftell(filePointer);
 	fseek(filePointer, 0, SEEK_SET);
 
-	char header[32];
 	if (fileSize >= 32) {
+		char header[32];
 		fread(header, sizeof(char), 32, filePointer);
 		if (memcmp(header, "JCLCTIRA", 8) == 0) {
 			// Found a compressed file
 			opmode = DECOMPRESS;
-			memccpy(&originalSize, header + 8, 1, sizeof(unsigned long));
-			memccpy(&dataSegmentLoc, header + 16, 1, sizeof(unsigned long));
-			memccpy(&dictionaryLoc, header + 24, 1, sizeof(unsigned long));
+			memcpy(&originalSize, header + 8, sizeof(uint64_t));
+			memcpy(&dataSegmentLoc, header + 16, sizeof(uint64_t));
+			memcpy(&dictionaryLoc, header + 24, sizeof(uint64_t));
 		} else {
 			opmode = COMPRESS;
 		}
@@ -43,24 +46,46 @@ bool Input::openFile(std::string& fileName) {
 	return true;
 }
 
-void Input::operate() {
-	outBufferSize = 32;
-	outBuffer = (char*) malloc(sizeof(char) * outBufferSize);
-	/* Write header
-	 * <Bytes>   <Content>
-	 * 0-7       Magic numbers
-	 * 8-15      Original size (unsigned long)
-	 * 16-23     Data segment start location
-	 * 24-31     Dictionary start location
-	 */
-	memcpy(outBuffer, "JCLCTIRA", 8);
-	// Temporary
-	unsigned long das = 512UL;
-	unsigned long dis = 4096UL;
-	memcpy(outBuffer + 8, &fileSize, 8);
-	memcpy(outBuffer + 16, &das, 8);
-	memcpy(outBuffer + 24, &dis, 8);
+void Input::operate(Output& out) {
+	if (opmode == COMPRESS) {
+		outBufferSize = 8;
+		outBuffer = (char*) malloc(sizeof(char) * outBufferSize);
+		/* Write start header
+		 * <Bytes>   <Content>
+		 * 0-7       Magic numbers
+		 */
+		memcpy(outBuffer, "JCLCTIRA", 8);
+		memcpy(outBuffer + 8, &fileSize, 8);
+		dataSegmentLoc = 8UL;
 
+		int i = 0;
+		int n;
+		char readBuffer[1024];
+
+		// TODO: COMPRESS AND WRITE
+
+//		uint64_t wbSize = out.getWriteBufferSize();
+//		for (uint64_t i = 0; i < outBufferSize; i += wbSize) {
+//			out.write(outBuffer + i, std::min(wbSize, outBufferSize - i));
+//		}
+
+		/*
+		 * Write end header
+		 * 0-7      Original size (unsigned long)
+		 * 8-15     Data segment start location
+		 * 16-23     Dictionary start location
+		 */
+		// Temporary
+		char header[32];
+		memcpy(outBuffer + 16, &dataSegmentLoc, 8);
+//		memcpy(outBuffer + 24, &dis, 8);
+
+
+	} else if (opmode == DECOMPRESS) {
+		// TODO
+		return;
+	}
+	return;
 }
 
 void Input::enlargeBuffer() {
@@ -68,11 +93,4 @@ void Input::enlargeBuffer() {
 		outBufferSize = 1;
 	outBufferSize *= 2;
 	outBuffer = (char*) realloc(outBuffer, sizeof(char) * outBufferSize);
-}
-
-bool Input::write(Output& out) {
-	unsigned long wbSize = out.getWriteBufferSize();
-	for (unsigned int i = 0; i < outBufferSize; i += wbSize) {
-		out.write(outBuffer + i, std::min(wbSize, outBufferSize - i));
-	}
 }

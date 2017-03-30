@@ -26,14 +26,7 @@ public:
 	/**
 	 * @brief Compress or decompress the opened file, depending on determined operation mode.
 	 */
-	void operate();
-
-	/**
-	 * @brief Write the output to an output object.
-	 * @param out
-	 * @return
-	 */
-	bool write(Output& out);
+	void operate(Output& out);
 
 	/**
 	 * @brief Get operation mode for opened file.
@@ -43,7 +36,7 @@ public:
 
 	/**
 	 * @brief If opened file is a compressed file, get the original size from header.
-	 * @return Original size in bytes
+	 * @return Original size in bytes.
 	 */
 	unsigned long getOriginalSize() const {return originalSize;}
 
@@ -67,13 +60,13 @@ private:
 	void enlargeBuffer();
 
 	FILE* filePointer;
-	unsigned long fileSize;
-	unsigned long outBufferSize;
+	uint64_t fileSize;
+	uint64_t outBufferSize;
 	char* outBuffer;
 	OpMode opmode;
-	unsigned long originalSize;
-	unsigned long dataSegmentLoc;
-	unsigned long dictionaryLoc;
+	uint64_t originalSize;
+	uint64_t dataSegmentLoc;
+	uint64_t dictionaryLoc;
 };
 
 #endif /* INPUT_HPP */
