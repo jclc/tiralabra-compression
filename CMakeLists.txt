@@ -21,11 +21,26 @@ if(MAKE_TESTS)
 	enable_testing()
 	find_package(GTest REQUIRED)
 
-	set(TEST_SOURCES
+	set(TESTOUTPUT
 		tests/testoutput.cpp
 		tests/testoutput.hpp)
+
 	include_directories(${GTEST_INCLUDE_DIRS})
-	add_executable(testtest ${TEST_SOURCES} tests/testtest.cpp)
-	target_link_libraries(testtest ${GTEST_BOTH_LIBRARIES})
-	add_test(TestTest testtest)
+
+	add_executable(testoutputtest
+		${TESTOUTPUT}
+		tests/testoutputtest.cpp)
+
+	add_executable(inputtest
+		${TESTOUTPUT}
+		src/input.cpp
+		tests/inputtest.cpp)
+
+	target_link_libraries(testoutputtest ${GTEST_BOTH_LIBRARIES})
+	add_test(NAME TestOutputTest COMMAND testoutputtest
+		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test-resources")
+
+	target_link_libraries(inputtest ${GTEST_BOTH_LIBRARIES})
+	add_test(NAME InputTest COMMAND inputtest
+		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test-resources")
 endif()
