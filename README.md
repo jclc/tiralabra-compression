@@ -23,7 +23,7 @@ Use the `-v` option for verbose output.
 
 ## Running unit tests
 
-If you compiled with `MAKE_TESTS` enabled, tests should have been compiled in the build directory. Run tests with `ctest --output-on-failure` or equivalent.Tests are run in the test-resources directory in the source directory and will fail if the directory and files within are not present.
+If you compiled with `MAKE_TESTS` enabled, tests should have been compiled in the build directory. Run tests with `ctest --output-on-failure` or equivalent. Tests require the "test-resources" directory and all the filew within to be present in the source directory.
 
 ## Projektin dokumentaatio
 
