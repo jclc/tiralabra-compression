@@ -21,7 +21,7 @@ public:
 	 * @param fileName Name of the file to be opened.
 	 * @return Returns true if file was opened successfully.
 	 */
-	bool openFile(std::string& fileName);
+	bool openFile(const std::string& fileName);
 
 	/**
 	 * @brief Compress or decompress the opened file, depending on determined operation mode.
