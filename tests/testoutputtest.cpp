@@ -9,7 +9,9 @@ TEST(TestOutputSuite, TestOutput_Basic) {
 
 	ASSERT_EQ(strlen(test_str1), to1.getOutputCharCount())
 		<< "TestOutput returns wrong char count for test string";
-	ASSERT_STREQ("hello, this is a test string", to1.getOutput())
+	char ret[32];
+	strncpy(ret, to1.getOutput(), strlen(test_str1));
+	ASSERT_STREQ(test_str1, ret)
 		<< "TestOutput doesn't return the test string";
 
 	TestOutput to2;

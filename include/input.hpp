@@ -54,15 +54,8 @@ public:
 
 private:
 
-	/**
-	 * @brief Double the size of the file buffer
-	 */
-	void enlargeBuffer();
-
 	FILE* filePointer;
 	uint64_t fileSize;
-	uint64_t outBufferSize;
-	char* outBuffer;
 	OpMode opmode;
 	uint64_t originalSize;
 	uint64_t dataSegmentLoc;

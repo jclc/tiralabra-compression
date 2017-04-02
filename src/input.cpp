@@ -6,8 +6,6 @@
 Input::Input() {
 	filePointer = nullptr;
 	fileSize = 0UL;
-	outBufferSize = 0;
-	outBuffer = nullptr;
 	dataSegmentLoc = 0UL;
 	dictionaryLoc = 0UL;
 	opmode = UNKNOWN;
@@ -16,7 +14,6 @@ Input::Input() {
 Input::~Input() {
 	if (filePointer)
 		fclose(filePointer);
-	free(outBuffer);
 }
 
 bool Input::openFile(const std::string& fileName) {
@@ -93,11 +90,4 @@ void Input::operate(Output& out) {
 		return;
 	}
 	return;
-}
-
-void Input::enlargeBuffer() {
-	if (outBufferSize == 0)
-		outBufferSize = 1;
-	outBufferSize *= 2;
-	outBuffer = (char*) realloc(outBuffer, sizeof(char) * outBufferSize);
 }
