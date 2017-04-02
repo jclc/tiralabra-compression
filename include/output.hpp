@@ -2,7 +2,7 @@
 #define OUTPUT_HPP
 
 #include <string>
-#include <stdio.h>
+#include <cstdio>
 
 const unsigned long WRITE_BUFFER_SIZE = 1024;
 

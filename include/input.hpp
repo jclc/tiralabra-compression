@@ -1,9 +1,9 @@
 #ifndef INPUT_HPP
 #define INPUT_HPP
 
-#include <string>
 #include "output.hpp"
-#include <stdio.h>
+#include <string>
+#include <cstdio>
 
 typedef enum OpMode {
 	UNKNOWN,

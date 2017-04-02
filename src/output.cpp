@@ -1,5 +1,5 @@
 #include "output.hpp"
-#include <stdio.h>
+#include <cstdio>
 
 FileOutput::FileOutput() {
 	filePointer = nullptr;

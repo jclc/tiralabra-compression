@@ -11,7 +11,7 @@ TEST(TestOutputSuite, TestOutput_Basic) {
 		<< "TestOutput returns wrong char count for test string";
 	char ret[32];
 	strncpy(ret, to1.getOutput(), strlen(test_str1));
-	ASSERT_STREQ(test_str1, ret)
+	EXPECT_STREQ(test_str1, ret)
 		<< "TestOutput doesn't return the test string";
 
 	TestOutput to2;
