@@ -20,6 +20,12 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 if(MAKE_TESTS)
 	enable_testing()
 	find_package(GTest REQUIRED)
+	# Defines the following:
+	# GTEST_FOUND - Found the Google Testing framework
+	# GTEST_INCLUDE_DIRS - Include directories
+	# GTEST_BOTH_LIBRARIES - Both libgtest & libgtest-main
+	# GTEST_LIBRARIES - libgtest
+	# GTEST_MAIN_LIBRARIES - libgtest-main
 
 	set(TESTOUTPUT
 		tests/testoutput.cpp
