@@ -39,11 +39,11 @@ If output file is not given, output will be printed to stdout.
 
 `-n` Null output - Discard output, useful for benchmarking without file I/O
 
-Options can be entered separately `-v -b -n` or together `-vbn` or both `-vb -n`. They can also be entered before or after other arguments.
+Options can be entered separately `-v -b -n`, together `-vbn` or both `-vb -n`. They can also be entered before or after other arguments.
 
 ## Running unit tests
 
-If you created makefiles with `MAKE_TESTS` enabled, tests should have been compiled in the build directory. Run tests with `ctest --output-on-failure` or equivalent .Tests are run in the test-resources directory located in the source directory and will fail if the directory and files within are not present.
+If you created makefiles with `MAKE_TESTS` enabled, tests should have been compiled in the build directory. Run tests with `ctest --output-on-failure` or equivalent in the build directory. Tests are run automatically in the 'test-resources' directory located in the source directory and will fail if the directory and files within are not present.
 
 ## Projektin dokumentaatio
 
