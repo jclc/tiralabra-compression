@@ -11,7 +11,10 @@ const unsigned long WRITE_BUFFER_SIZE = 1024;
  */
 class Output {
 public:
+	virtual ~Output() {}
+
 	virtual bool openFile(std::string& fileName) {}
+	virtual bool closeFile() {}
 	virtual void write(const char* data, unsigned long bufferSize) = 0;
 	virtual unsigned long getWriteBufferSize() {return WRITE_BUFFER_SIZE;}
 };
@@ -22,7 +25,7 @@ public:
 class FileOutput: public Output {
 public:
 	FileOutput();
-	~FileOutput();
+	virtual ~FileOutput() override;
 
 	/**
 	 * @brief Open a file for writing. If exists, will be truncated to zero size.
