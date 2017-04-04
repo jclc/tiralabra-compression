@@ -13,8 +13,7 @@ class Output {
 public:
 	virtual ~Output() {}
 
-	virtual bool openFile(std::string& fileName) {}
-	virtual bool closeFile() {}
+	virtual bool openFile(std::string& fileName) {return true;}
 	virtual void write(const char* data, unsigned long bufferSize) = 0;
 	virtual unsigned long getWriteBufferSize() {return WRITE_BUFFER_SIZE;}
 };

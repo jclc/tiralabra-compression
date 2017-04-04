@@ -54,5 +54,10 @@ TEST_F(OutputTest, OutputTest_WritingToFile) {
 }
 
 TEST_F(OutputTest, OutputTest_WritingToStream) {
-
+	Output* out1 = new StreamOutput;
+	testing::internal::CaptureStdout();
+	std::string dataString = "QWERTYUIOP";
+	out1->write(dataString.c_str(), dataString.length());
+	std::string capture = testing::internal::GetCapturedStdout();
+	EXPECT_STREQ(dataString.c_str(), capture.c_str()) << "Stream output did not match with data";
 }
