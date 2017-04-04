@@ -13,17 +13,37 @@ This repository holds a data structures-related university project. Course-relat
 
 Use `cmake` or `cmake-gui` to generate makefiles. Run `make` to build.
 
+### Example
+
+```
+mkdir build; cd build
+cmake ..
+make
+```
+
 ## Usage
 
-`tl-compression [-v] <input file> [output file]`
+`tl-compression [options] <input file> [output file]`
+
+Uncompressed files will be compressed and compressed files are detected as such and are uncompressed.
 
 If output file is not given, output will be printed to stdout.
 
-Use the `-v` option for verbose output.
+### Options
+
+`-h` Print help message
+
+`-v` Verbose output - Print file information and progress (don't use when writing to stdout)
+
+`-b` Benchmark mode - Print execution time in nanoseconds
+
+`-n` Null output - Discard output, useful for benchmarking without file I/O
+
+Options can be entered separately `-v -b -n` or together `-vbn` or both `-vb -n`. They can also be entered before or after other arguments.
 
 ## Running unit tests
 
-If you compiled with `MAKE_TESTS` enabled, tests should have been compiled in the build directory. Run tests with `ctest --output-on-failure` or equivalent.Tests are run in the test-resources directory in the source directory and will fail if the directory and files within are not present.
+If you created makefiles with `MAKE_TESTS` enabled, tests should have been compiled in the build directory. Run tests with `ctest --output-on-failure` or equivalent .Tests are run in the test-resources directory located in the source directory and will fail if the directory and files within are not present.
 
 ## Projektin dokumentaatio
 
