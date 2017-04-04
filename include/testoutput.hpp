@@ -1,6 +1,9 @@
 /*
  * This is a testing utility. Do not include this in the main program.
  */
+#ifndef TESTOUTPUT_HPP
+#define TESTOUTPUT_HPP
+
 #include "output.hpp"
 
 /**
@@ -45,3 +48,5 @@ private:
 	 */
 	unsigned long bufferSize;
 };
+
+#endif /* TESTOUTPUT_HPP */
