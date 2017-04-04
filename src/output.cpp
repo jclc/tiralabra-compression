@@ -11,7 +11,7 @@ FileOutput::~FileOutput() {
 }
 
 bool FileOutput::openFile(std::string& fileName) {
-	filePointer = fopen(fileName.c_str(), "w+");
+	filePointer = fopen(fileName.c_str(), "w");
 	if (!filePointer)
 		return false;
 	return true;

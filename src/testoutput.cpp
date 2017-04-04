@@ -1,3 +1,6 @@
+/*
+ * This is a testing utility. Do not include this in the main program.
+ */
 #include "testoutput.hpp"
 #include <cstring>
 

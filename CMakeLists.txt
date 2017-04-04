@@ -28,25 +28,35 @@ if(MAKE_TESTS)
 	# GTEST_MAIN_LIBRARIES - libgtest-main
 
 	set(TESTOUTPUT
-		tests/testoutput.cpp
-		tests/testoutput.hpp)
+		src/testoutput.cpp
+		include/testoutput.hpp)
 
 	include_directories(${GTEST_INCLUDE_DIRS})
 
-	add_executable(testoutputtest
-		${TESTOUTPUT}
-		tests/testoutputtest.cpp)
+	# Unit tests
 
-	add_executable(inputtest
-		${TESTOUTPUT}
-		src/input.cpp
-		tests/inputtest.cpp)
+	add_executable(testoutputtest
+		tests/testoutputtest.cpp
+		${TESTOUTPUT})
 
 	target_link_libraries(testoutputtest ${GTEST_BOTH_LIBRARIES})
 	add_test(NAME TestOutputTest COMMAND testoutputtest
 		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test-resources")
 
+	add_executable(inputtest
+		tests/inputtest.cpp
+		src/input.cpp
+		${TESTOUTPUT})
+
 	target_link_libraries(inputtest ${GTEST_BOTH_LIBRARIES})
 	add_test(NAME InputTest COMMAND inputtest
+		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test-resources")
+
+	add_executable(outputtest
+		tests/outputtest.cpp
+		src/output.cpp)
+
+	target_link_libraries(outputtest ${GTEST_BOTH_LIBRARIES})
+	add_test(NAME OutputTest COMMAND outputtest
 		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test-resources")
 endif()
