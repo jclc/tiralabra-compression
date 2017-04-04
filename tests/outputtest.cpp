@@ -23,14 +23,14 @@ protected:
 #endif
 	}
 
-//	virtual void TearDown() {
-//		FILE* tmpFile;
-//		tmpFile = fopen(tempFileName1.c_str(), "w");
-//		if (tmpFile) {
-//			fclose(tmpFile);
-//			remove(tempFileName1.c_str());
-//		}
-//	}
+	virtual void TearDown() {
+		FILE* tmpFile;
+		tmpFile = fopen(tempFileName1.c_str(), "w");
+		if (tmpFile) {
+			fclose(tmpFile);
+			remove(tempFileName1.c_str());
+		}
+	}
 };
 
 TEST_F(OutputTest, OutputTest_WritingToFile) {
@@ -51,4 +51,8 @@ TEST_F(OutputTest, OutputTest_WritingToFile) {
 	char readStr[10] = "";
 	strncpy(readStr, readBuffer, sizeof(char) * 9);
 	EXPECT_STREQ(data, readStr) << "Written content doesn't match";
+}
+
+TEST_F(OutputTest, OutputTest_WritingToStream) {
+
 }
