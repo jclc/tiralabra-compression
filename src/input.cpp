@@ -38,10 +38,12 @@ bool Input::openFile(const std::string& fileName) {
 			memcpy(&dataSegmentLoc, endHeader + 8, 8);
 			memcpy(&dictionaryLoc, endHeader + 16, 8);
 		} else {
+			// Found an uncompressed file under the size of 32 bytes
 			opmode = COMPRESS;
 			originalSize = fileSize;
 		}
 	} else {
+		// Found an uncompressed file
 		opmode = COMPRESS;
 	}
 
@@ -57,9 +59,9 @@ void Input::operate(Output& out) {
 		out.write("JCLCTIRA", 8);
 		dataSegmentLoc = 8UL;
 
-//		int i = 0;
-//		int n;
-//		char readBuffer[1024];
+		int i = 0;
+		int n;
+		char readBuffer[1024];
 
 		// TODO: COMPRESS AND WRITE
 

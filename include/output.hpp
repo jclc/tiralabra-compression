@@ -58,4 +58,19 @@ public:
 	virtual void write(const char* data, unsigned long bufferSize) override;
 };
 
+/**
+ * @brief Output class that does nothing
+ */
+class NullOutput: public Output {
+public:
+	NullOutput() {}
+
+	/**
+	 * @brief Do nothing.
+	 * @param data Doesn't matter
+	 * @param bufferSize Doesn't matter
+	 */
+	virtual void write(const char* data, unsigned long bufferSize) override {}
+};
+
 #endif /* OUTPUT_HPP */

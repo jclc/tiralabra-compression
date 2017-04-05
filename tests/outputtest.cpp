@@ -58,6 +58,17 @@ TEST_F(OutputTest, OutputTest_WritingToStream) {
 	testing::internal::CaptureStdout();
 	std::string dataString = "QWERTYUIOP";
 	out1->write(dataString.c_str(), dataString.length());
+	delete out1;
 	std::string capture = testing::internal::GetCapturedStdout();
 	EXPECT_STREQ(dataString.c_str(), capture.c_str()) << "Stream output did not match with data";
+}
+
+TEST_F(OutputTest, OutputTest_WritingToEndlessBitVoid) {
+	Output* out1 = new NullOutput;
+	testing::internal::CaptureStdout();
+	std::string dataString = "When you gaze long into an abyss the abyss also gazes into you.";
+	out1->write(dataString.c_str(), dataString.size());
+	delete out1;
+	std::string capture = testing::internal::GetCapturedStdout();
+	EXPECT_STREQ("", capture.c_str());
 }

@@ -86,12 +86,17 @@ int main(int argc, char** argv) {
 			std::cout << "Data segment location: " << input.getDataSegmentLoc() << std::endl;
 			std::cout << "Dictionary location: " << input.getDictionaryLoc() << std::endl;
 		}
-		std::cout << "Writing output to " << (outFileName == "" ? "stdout" : outFileName) << std::endl;
+		if (nullOutput)
+			std::cout << "Discarding output" << std::endl;
+		else if (outFileName != "")
+			std::cout << "" << std::endl;
 	}
 
 	std::unique_ptr<Output> output;
 
-	if (outFileName == "") {
+	if (nullOutput) {
+		output = std::unique_ptr<Output>(new NullOutput());
+	} else if (outFileName == "") {
 		output = std::unique_ptr<Output>(new StreamOutput());
 	} else {
 		output = std::unique_ptr<Output>(new FileOutput());
