@@ -33,7 +33,7 @@ protected:
 	}
 };
 
-TEST_F(OutputTest, OutputTest_WritingToFile) {
+TEST_F(OutputTest, WritingToFile) {
 	Output* out1 = new FileOutput;
 	bool success = out1->openFile(tempFileName1);
 	ASSERT_TRUE(success) << "FileOutput couldn't open file " << tempFileName1;
@@ -53,7 +53,7 @@ TEST_F(OutputTest, OutputTest_WritingToFile) {
 	EXPECT_STREQ(data, readStr) << "Written content doesn't match";
 }
 
-TEST_F(OutputTest, OutputTest_WritingToStream) {
+TEST_F(OutputTest, WritingToStream) {
 	Output* out1 = new StreamOutput;
 	testing::internal::CaptureStdout();
 	std::string dataString = "QWERTYUIOP";
@@ -63,7 +63,7 @@ TEST_F(OutputTest, OutputTest_WritingToStream) {
 	EXPECT_STREQ(dataString.c_str(), capture.c_str()) << "Stream output did not match with data";
 }
 
-TEST_F(OutputTest, OutputTest_WritingToEndlessBitVoid) {
+TEST_F(OutputTest, WritingToEndlessBitVoid) {
 	Output* out1 = new NullOutput;
 	testing::internal::CaptureStdout();
 	std::string dataString = "When you gaze long into an abyss the abyss also gazes into you.";

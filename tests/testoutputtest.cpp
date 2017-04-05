@@ -2,7 +2,7 @@
 #include "testoutput.hpp"
 #include <cstring>
 
-TEST(TestOutput, TestOutput_Basic) {
+TEST(TestOutput, TestOutputWorks) {
 	TestOutput to1;
 	const char* test_str1 = "hello, this is a test string";
 	to1.write(test_str1, strlen(test_str1));
