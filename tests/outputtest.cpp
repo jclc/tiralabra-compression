@@ -70,5 +70,5 @@ TEST_F(OutputTest, OutputTest_WritingToEndlessBitVoid) {
 	out1->write(dataString.c_str(), dataString.size());
 	delete out1;
 	std::string capture = testing::internal::GetCapturedStdout();
-	EXPECT_STREQ("", capture.c_str());
+	EXPECT_STREQ("", capture.c_str()) << "NullOutput printed to stdout";
 }
