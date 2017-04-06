@@ -38,19 +38,26 @@ public:
 	 * @brief If opened file is a compressed file, get the original size from header.
 	 * @return Original size in bytes.
 	 */
-	unsigned long getOriginalSize() const {return originalSize;}
+	uint64_t getOriginalSize() const {return originalSize;}
 
 	/**
 	 * @brief If opened file is a compressed file, get the location of the data segment.
 	 * @return Location of data segment in bytes from the beginning.
 	 */
-	unsigned long getDataSegmentLoc() const {return dataSegmentLoc;}
+	uint64_t getDataSegmentLoc() const {return dataSegmentLoc;}
 
 	/**
 	 * @brief If opened file is a compressed file, get the location of the dictionary.
 	 * @return Location of dictionary in bytes from the beginning.
 	 */
-	unsigned long getDictionaryLoc() const {return dictionaryLoc;}
+	uint64_t getDictionaryLoc() const {return dictionaryLoc;}
+
+	/**
+	 * @brief If opened file is a compressed file, get the bit size used for dictionary entries.
+	 * @return Bit size for dictionary entries.
+	 */
+	uint8_t getBitSize() const {return bitSize;}
+
 private:
 	FILE* filePointer;
 	uint64_t fileSize;
@@ -58,6 +65,7 @@ private:
 	uint64_t originalSize;
 	uint64_t dataSegmentLoc;
 	uint64_t dictionaryLoc;
+	uint8_t bitSize;
 };
 
 #endif /* INPUT_HPP */

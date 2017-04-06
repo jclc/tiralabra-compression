@@ -24,6 +24,7 @@ TEST(InputTest, RecogniseCompressedFile) {
 	ASSERT_TRUE(openSuccess) << "Failed to open file " << filepath1;
 	EXPECT_EQ(DECOMPRESS, in1.getOpMode())
 		<< "Failed to assign opmode for fake_compressed_file.bin";
+	EXPECT_EQ(16, ( int ) in1.getBitSize()) << "Incorrect bit size";
 	EXPECT_EQ(256UL, in1.getOriginalSize()) << "Incorrect original size";
 	EXPECT_EQ(8UL, in1.getDataSegmentLoc()) << "Incorrect data segment location";
 	EXPECT_EQ(64UL, in1.getDictionaryLoc()) << "Incorrect dictionary location";

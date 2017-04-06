@@ -13,6 +13,7 @@ Input::Input() {
 	fileSize = 0UL;
 	dataSegmentLoc = 0UL;
 	dictionaryLoc = 0UL;
+	bitSize = 0;
 	opmode = UNKNOWN;
 }
 
@@ -40,7 +41,7 @@ bool Input::openFile(const std::string& fileName) {
 			fseek(filePointer, -24, SEEK_END);
 			fread(endHeader, sizeof(char), 24, filePointer);
 			memcpy(&originalSize, endHeader, 8);
-//			memcpy(&dataSegmentLoc, endHeader + 8, 8);
+			memcpy(&bitSize, endHeader + 8, 1);
 			dataSegmentLoc = 8UL; // data segment always starts after magic numbers
 			memcpy(&dictionaryLoc, endHeader + 16, 8);
 		} else {
@@ -74,31 +75,34 @@ void Input::operate(Output& out) {
 		uint16_t dictionary[(1 << (MAX_BIT_SIZE - 1)) - 256];
 
 		size_t bytesRead = -1;
-		uint64_t index = 0;
+		uint64_t index = 8UL;
 		int i;
 		while ((bytesRead = fread(readBuffer, sizeof(char), BUFFER_SIZE, filePointer)) != 0) {
 			i = 0;
 			out.write(readBuffer, bytesRead);
 			index += bytesRead;
 		}
-
-		std::string tempContent = "\n\n***TEMPORARY***\n\n";
-		out.write(tempContent.c_str(), tempContent.size());
+		dictionaryLoc = index;
 
 		/*
 		 * Write end header
 		 * <Bytes>   <Content>
 		 * 0-7       Original size (unsigned long)
-		 * 8-15      Reserved
+		 * 8         Bit size of each dictionary entry
+		 * 9-15      Reserved
 		 * 16-23     Dictionary start location
 		 */
 		char tempArray[8];
+
 		memcpy(tempArray, &fileSize, 8);
 		out.write(tempArray, 8);
-//		memcpy(tempArray, &dataSegmentLoc, 8);
-//		out.write(tempArray, 8);
-		const char nullArray[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-		out.write(nullArray, 8);
+
+		memcpy(tempArray, &bitSize, 1);
+		out.write(tempArray, 1);
+
+		const char nullArray[7] = {0, 0, 0, 0, 0, 0, 0};
+		out.write(nullArray, 7);
+
 		memcpy(tempArray, &dictionaryLoc, 8);
 		out.write(tempArray, 8);
 

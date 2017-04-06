@@ -15,6 +15,7 @@ void printHelp() {
 		<< "    -h: Print this help message" << std::endl
 		<< "    -v: Verbose output" << std::endl
 		<< "    -b: Benchmark mode" << std::endl
+		<< "    -i: Only print file info" << std::endl
 		<< "    -n: Null output (disregard output, useful for benchmark)" << std::endl;
 }
 
@@ -24,6 +25,7 @@ int main(int argc, char** argv) {
 	bool benchmark = false;
 	bool verbose = false;
 	bool nullOutput = false; // If true, throw away the output
+	bool printInfo = false;
 	std::chrono::time_point<std::chrono::system_clock> timestamp;
 
 	for (int i = 1; i < argc; ++i) {
@@ -54,6 +56,9 @@ int main(int argc, char** argv) {
 				case 'n':
 					nullOutput = true;
 					break;
+				case 'i':
+					printInfo = true;
+					break;
 				default:
 					std::cerr << "Unknown option -" << argv[i][j] << std::endl;
 					return EXIT_FAILURE;
@@ -77,20 +82,32 @@ int main(int argc, char** argv) {
 		return EXIT_FAILURE;
 	}
 
-	if (verbose) {
+	if (verbose || printInfo) {
 		OpMode opmode = input.getOpMode();
-		std::cout << (opmode == COMPRESS ? "Compressing" : "Decompressing")
-			<< " file " << inFileName << std::endl;
-		std::cout << "Original size: " << input.getOriginalSize() << std::endl;
+		if (!printInfo) {
+			std::cout << (opmode == COMPRESS ? "Compressing" : "Decompressing")
+				<< " file " << inFileName << std::endl;
+		} else {
+			std::cout << "File " << inFileName << " is "
+				<< (opmode == COMPRESS ? "uncompressed" : "compressed") << std::endl;
+		}
+		std::cout << (opmode == COMPRESS ? "File size: " : "Original size: ")
+			<< input.getOriginalSize() << std::endl;
 		if (opmode == DECOMPRESS) {
+			std::cout << "Bit size: " << (int) input.getBitSize() << std::endl;
 			std::cout << "Data segment location: " << input.getDataSegmentLoc() << std::endl;
 			std::cout << "Dictionary location: " << input.getDictionaryLoc() << std::endl;
 		}
-		if (nullOutput)
-			std::cout << "Discarding output" << std::endl;
-		else if (outFileName != "")
-			std::cout << "" << std::endl;
+		if (!printInfo) {
+			if (nullOutput)
+				std::cout << "Discarding output" << std::endl;
+			else if (outFileName != "")
+				std::cout << "" << std::endl;
+		}
 	}
+
+	if (printInfo)
+		return EXIT_SUCCESS;
 
 	std::unique_ptr<Output> output;
 

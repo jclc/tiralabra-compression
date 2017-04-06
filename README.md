@@ -37,6 +37,8 @@ If output file is not given, output will be printed to stdout.
 
 `-b` Benchmark mode - Print execution time in nanoseconds
 
+`-i` Print file info - Do not operate on the file, only print info
+
 `-n` Null output - Discard output, useful for benchmarking without file I/O
 
 Options can be entered separately `-v -b -n`, together `-vbn` or both `-vb -n`. They can also be entered before or after other arguments.
