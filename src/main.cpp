@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
 	if (!input.openFile(inFileName) || input.getOpMode() == UNKNOWN) {
 		std::cerr << "Error opening file " << inFileName << std::endl;
 		return EXIT_FAILURE;
-	} else if (input.getOpMode() == COMPRESS && input.getOriginalSize() == 0) {
+	} else if (input.getOpMode() == COMPRESS && input.getFileSize() == 0) {
 		std::cerr << "File " << inFileName << " is empty" << std::endl;
 		return EXIT_FAILURE;
 	}
