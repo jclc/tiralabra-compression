@@ -1,7 +1,12 @@
 #include "input.hpp"
 #include <cstring>
 #include <cstdint>
+#include <cstdio>
 #include <iostream>
+
+const uint64_t BUFFER_SIZE = 1024UL;
+const int MIN_BIT_SIZE = 9;
+const int MAX_BIT_SIZE = 16;
 
 Input::Input() {
 	filePointer = nullptr;
@@ -26,16 +31,17 @@ bool Input::openFile(const std::string& fileName) {
 	fseek(filePointer, 0, SEEK_SET);
 
 	if (fileSize >= 32) {
-		char beginHeader[8];
-		fread(beginHeader, sizeof(char), 8, filePointer);
-		if (memcmp(beginHeader, "JCLCTIRA", 8) == 0) {
+		char startHeader[8];
+		fread(startHeader, sizeof(char), 8, filePointer);
+		if (memcmp(startHeader, "JCLCTIRA", 8) == 0) {
 			// Found a compressed file
 			char endHeader[24];
 			opmode = DECOMPRESS;
 			fseek(filePointer, -24, SEEK_END);
 			fread(endHeader, sizeof(char), 24, filePointer);
 			memcpy(&originalSize, endHeader, 8);
-			memcpy(&dataSegmentLoc, endHeader + 8, 8);
+//			memcpy(&dataSegmentLoc, endHeader + 8, 8);
+			dataSegmentLoc = 8UL; // data segment always starts after magic numbers
 			memcpy(&dictionaryLoc, endHeader + 16, 8);
 		} else {
 			// Found an uncompressed file under the size of 32 bytes
@@ -44,6 +50,7 @@ bool Input::openFile(const std::string& fileName) {
 		}
 	} else {
 		// Found an uncompressed file
+		originalSize = fileSize;
 		opmode = COMPRESS;
 	}
 
@@ -59,30 +66,39 @@ void Input::operate(Output& out) {
 		out.write("JCLCTIRA", 8);
 		dataSegmentLoc = 8UL;
 
-		int i = 0;
-		int n;
-		char readBuffer[1024];
-
 		// TODO: COMPRESS AND WRITE
 
-//		uint64_t wbSize = out.getWriteBufferSize();
-//		for (uint64_t i = 0; i < outBufferSize; i += wbSize) {
-//			out.write(outBuffer + i, std::min(wbSize, outBufferSize - i));
-//		}
+		// For now, just use MAX_BIT_SIZE
+		int bits = MAX_BIT_SIZE;
+		char* readBuffer = (char*) malloc(sizeof(char) * (1 << (MAX_BIT_SIZE - 1)));
+		uint16_t dictionary[(1 << (MAX_BIT_SIZE - 1)) - 256];
+
+		size_t bytesRead = -1;
+		uint64_t index = 0;
+		int i;
+		while ((bytesRead = fread(readBuffer, sizeof(char), BUFFER_SIZE, filePointer)) != 0) {
+			i = 0;
+			out.write(readBuffer, bytesRead);
+			index += bytesRead;
+		}
+
 		std::string tempContent = "\n\n***TEMPORARY***\n\n";
 		out.write(tempContent.c_str(), tempContent.size());
 
 		/*
 		 * Write end header
-		 * 0-7      Original size (unsigned long)
-		 * 8-15     Data segment start location
+		 * <Bytes>   <Content>
+		 * 0-7       Original size (unsigned long)
+		 * 8-15      Reserved
 		 * 16-23     Dictionary start location
 		 */
 		char tempArray[8];
 		memcpy(tempArray, &fileSize, 8);
 		out.write(tempArray, 8);
-		memcpy(tempArray, &dataSegmentLoc, 8);
-		out.write(tempArray, 8);
+//		memcpy(tempArray, &dataSegmentLoc, 8);
+//		out.write(tempArray, 8);
+		const char nullArray[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+		out.write(nullArray, 8);
 		memcpy(tempArray, &dictionaryLoc, 8);
 		out.write(tempArray, 8);
 

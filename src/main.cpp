@@ -21,11 +21,9 @@ void printHelp() {
 int main(int argc, char** argv) {
 	std::string inFileName = "";
 	std::string outFileName = ""; // If unset, write output to stdout
-	bool benchmarkAlgorithm = false;
-	bool benchmarkIo = false;
+	bool benchmark = false;
 	bool verbose = false;
 	bool nullOutput = false; // If true, throw away the output
-
 	std::chrono::time_point<std::chrono::system_clock> timestamp;
 
 	for (int i = 1; i < argc; ++i) {
@@ -48,7 +46,7 @@ int main(int argc, char** argv) {
 					printHelp();
 					return EXIT_SUCCESS;
 				case 'b':
-					benchmarkAlgorithm = true;
+					benchmark = true;
 					break;
 				case 'v':
 					verbose = true;
@@ -62,7 +60,6 @@ int main(int argc, char** argv) {
 				}
 				++j;
 			}
-
 		}
 	}
 
@@ -75,14 +72,17 @@ int main(int argc, char** argv) {
 	if (!input.openFile(inFileName) || input.getOpMode() == UNKNOWN) {
 		std::cerr << "Error opening file " << inFileName << std::endl;
 		return EXIT_FAILURE;
+	} else if (input.getOpMode() == COMPRESS && input.getOriginalSize() == 0) {
+		std::cerr << "File " << inFileName << " is empty" << std::endl;
+		return EXIT_FAILURE;
 	}
 
 	if (verbose) {
 		OpMode opmode = input.getOpMode();
 		std::cout << (opmode == COMPRESS ? "Compressing" : "Decompressing")
 			<< " file " << inFileName << std::endl;
+		std::cout << "Original size: " << input.getOriginalSize() << std::endl;
 		if (opmode == DECOMPRESS) {
-			std::cout << "Original size: " << input.getOriginalSize() << std::endl;
 			std::cout << "Data segment location: " << input.getDataSegmentLoc() << std::endl;
 			std::cout << "Dictionary location: " << input.getDictionaryLoc() << std::endl;
 		}
@@ -106,11 +106,11 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	if (benchmarkAlgorithm) {
+	if (benchmark) {
 		timestamp = std::chrono::system_clock::now();
 	}
 	input.operate(*output);
-	if (benchmarkAlgorithm) {
+	if (benchmark) {
 		std::chrono::duration<unsigned long, std::nano> elapsed(std::chrono::system_clock::now() - timestamp);
 		std::cout << "Time elapsed: " << elapsed.count() << " ns" << std::endl;
 	}

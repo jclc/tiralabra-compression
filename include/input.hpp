@@ -51,9 +51,7 @@ public:
 	 * @return Location of dictionary in bytes from the beginning.
 	 */
 	unsigned long getDictionaryLoc() const {return dictionaryLoc;}
-
 private:
-
 	FILE* filePointer;
 	uint64_t fileSize;
 	OpMode opmode;

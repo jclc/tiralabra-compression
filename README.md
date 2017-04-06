@@ -43,7 +43,9 @@ Options can be entered separately `-v -b -n`, together `-vbn` or both `-vb -n`. 
 
 ## Running unit tests
 
-If you created makefiles with `MAKE_TESTS` enabled, tests should have been compiled in the build directory. Run tests with `ctest --output-on-failure` or equivalent in the build directory. Tests are run automatically in the 'test-resources' directory located in the source directory and will fail if the directory and files within are not present.
+If you created makefiles with `MAKE_TESTS` enabled, tests should have been compiled in the build/tests directory. Run tests with `ctest --output-on-failure` or equivalent in the build/tests directory.
+
+Note that the tests require the test-resources directory located in the source directory to be present. The tests will fail if the directory and files within are not present.
 
 ## Projektin dokumentaatio
 

@@ -4,8 +4,6 @@
 #include <string>
 #include <cstdio>
 
-const unsigned long WRITE_BUFFER_SIZE = 1024;
-
 /**
  * @brief Virtual class that handles the program output
  */
@@ -15,7 +13,6 @@ public:
 
 	virtual bool openFile(std::string& fileName) {return true;}
 	virtual void write(const char* data, unsigned long bufferSize) = 0;
-	virtual unsigned long getWriteBufferSize() {return WRITE_BUFFER_SIZE;}
 };
 
 /**
