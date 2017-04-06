@@ -6,6 +6,7 @@
 #include "input.hpp"
 #include "output.hpp"
 #include <thread>
+#include <cmath>
 
 void printHelp() {
 	std::cout << "tiralabra-compression" << std::endl
@@ -91,12 +92,17 @@ int main(int argc, char** argv) {
 			std::cout << "File " << inFileName << " is "
 				<< (opmode == COMPRESS ? "uncompressed" : "compressed") << std::endl;
 		}
-		std::cout << (opmode == COMPRESS ? "File size: " : "Original size: ")
-			<< input.getOriginalSize() << std::endl;
 		if (opmode == DECOMPRESS) {
 			std::cout << "Bit size: " << (int) input.getBitSize() << std::endl;
 			std::cout << "Data segment location: " << input.getDataSegmentLoc() << std::endl;
 			std::cout << "Dictionary location: " << input.getDictionaryLoc() << std::endl;
+			std::cout << "Original size: " << input.getOriginalSize() << std::endl;
+		}
+		std::cout << "File size: " << input.getFileSize() << std::endl;
+		if (opmode == DECOMPRESS && input.getOriginalSize() != 0.0F) {
+			float compressRatio = (float) input.getFileSize() / (float) input.getOriginalSize();
+			std::cout << "Compression ratio: "
+				<< std::round(compressRatio * 100) / 100 << std::endl;
 		}
 		if (!printInfo) {
 			if (nullOutput)

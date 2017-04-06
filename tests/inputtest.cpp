@@ -14,7 +14,7 @@ TEST(InputTest, RecogniseUncompressedFile) {
 	bool openSuccess = in1.openFile("ebook.txt");
 	ASSERT_TRUE(openSuccess) << "Failed to open file ebook.txt";
 	EXPECT_EQ(COMPRESS, in1.getOpMode()) << "Failed to assign opmode for ebook.txt";
-	EXPECT_EQ(338791UL, in1.getOriginalSize()) << "Incorrect file size";
+	EXPECT_EQ(338791UL, in1.getFileSize()) << "Incorrect file size";
 }
 
 TEST(InputTest, RecogniseCompressedFile) {
@@ -28,4 +28,5 @@ TEST(InputTest, RecogniseCompressedFile) {
 	EXPECT_EQ(256UL, in1.getOriginalSize()) << "Incorrect original size";
 	EXPECT_EQ(8UL, in1.getDataSegmentLoc()) << "Incorrect data segment location";
 	EXPECT_EQ(64UL, in1.getDictionaryLoc()) << "Incorrect dictionary location";
+	EXPECT_EQ(279UL,     in1.getFileSize()) << "Incorrect file size";
 }

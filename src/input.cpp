@@ -4,13 +4,14 @@
 #include <cstdio>
 #include <iostream>
 
-const uint64_t BUFFER_SIZE = 1024UL;
+const int BUFFER_SIZE = 1024;
 const int MIN_BIT_SIZE = 9;
 const int MAX_BIT_SIZE = 16;
 
 Input::Input() {
 	filePointer = nullptr;
 	fileSize = 0UL;
+	originalSize = 0UL;
 	dataSegmentLoc = 0UL;
 	dictionaryLoc = 0UL;
 	bitSize = 0;
@@ -47,11 +48,9 @@ bool Input::openFile(const std::string& fileName) {
 		} else {
 			// Found an uncompressed file under the size of 32 bytes
 			opmode = COMPRESS;
-			originalSize = fileSize;
 		}
 	} else {
 		// Found an uncompressed file
-		originalSize = fileSize;
 		opmode = COMPRESS;
 	}
 
@@ -71,7 +70,7 @@ void Input::operate(Output& out) {
 
 		// For now, just use MAX_BIT_SIZE
 		int bits = MAX_BIT_SIZE;
-		char* readBuffer = (char*) malloc(sizeof(char) * (1 << (MAX_BIT_SIZE - 1)));
+		char* readBuffer = (char*) malloc(sizeof(char) * BUFFER_SIZE);
 		uint16_t dictionary[(1 << (MAX_BIT_SIZE - 1)) - 256];
 
 		size_t bytesRead = -1;
@@ -82,6 +81,8 @@ void Input::operate(Output& out) {
 			out.write(readBuffer, bytesRead);
 			index += bytesRead;
 		}
+
+		free(readBuffer);
 		dictionaryLoc = index;
 
 		/*

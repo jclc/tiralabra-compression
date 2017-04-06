@@ -35,6 +35,12 @@ public:
 	OpMode getOpMode() const {return opmode;}
 
 	/**
+	 * @brief Get total size of the file in bytes.
+	 * @return File size in bytes.
+	 */
+	uint64_t getFileSize() const {return fileSize;}
+
+	/**
 	 * @brief If opened file is a compressed file, get the original size from header.
 	 * @return Original size in bytes.
 	 */
@@ -60,8 +66,8 @@ public:
 
 private:
 	FILE* filePointer;
-	uint64_t fileSize;
 	OpMode opmode;
+	uint64_t fileSize;
 	uint64_t originalSize;
 	uint64_t dataSegmentLoc;
 	uint64_t dictionaryLoc;
