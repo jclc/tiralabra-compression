@@ -1,12 +1,10 @@
 #include "input.hpp"
+#include "encoder.hpp"
 #include <cstring>
 #include <cstdint>
 #include <cstdio>
 #include <iostream>
 
-const int BUFFER_SIZE = 1024;
-const int MIN_BIT_SIZE = 9;
-const int MAX_BIT_SIZE = 16;
 
 Input::Input() {
 	filePointer = nullptr;
@@ -54,63 +52,15 @@ bool Input::openFile(const std::string& fileName) {
 		opmode = COMPRESS;
 	}
 
+	if (opmode == COMPRESS) {
+		bitSize = 16;
+	}
+
 	return true;
 }
 
-void Input::operate(Output& out) {
-	if (opmode == COMPRESS) {
-		/* Write start header
-		 * <Bytes>   <Content>
-		 * 0-7       Magic numbers ("JCLCTIRA" in ASCII)
-		 */
-		out.write("JCLCTIRA", 8);
-		dataSegmentLoc = 8UL;
-
-		// TODO: COMPRESS AND WRITE
-
-		// For now, just use MAX_BIT_SIZE
-		int bits = MAX_BIT_SIZE;
-		char* readBuffer = (char*) malloc(sizeof(char) * BUFFER_SIZE);
-		uint16_t dictionary[(1 << (MAX_BIT_SIZE - 1)) - 256];
-
-		size_t bytesRead = -1;
-		uint64_t index = 8UL;
-		int i;
-		while ((bytesRead = fread(readBuffer, sizeof(char), BUFFER_SIZE, filePointer)) != 0) {
-			i = 0;
-			out.write(readBuffer, bytesRead);
-			index += bytesRead;
-		}
-
-		free(readBuffer);
-		dictionaryLoc = index;
-
-		/*
-		 * Write end header
-		 * <Bytes>   <Content>
-		 * 0-7       Original size (unsigned long)
-		 * 8         Bit size of each dictionary entry
-		 * 9-15      Reserved
-		 * 16-23     Dictionary start location
-		 */
-		char tempArray[8];
-
-		memcpy(tempArray, &fileSize, 8);
-		out.write(tempArray, 8);
-
-		memcpy(tempArray, &bitSize, 1);
-		out.write(tempArray, 1);
-
-		const char nullArray[7] = {0, 0, 0, 0, 0, 0, 0};
-		out.write(nullArray, 7);
-
-		memcpy(tempArray, &dictionaryLoc, 8);
-		out.write(tempArray, 8);
-
-
-	} else if (opmode == DECOMPRESS) {
-		// TODO
-		return;
-	}
-	return;
+int Input::read(uint8_t *dest, int bufferSize) {
+	return fread(dest, sizeof(uint8_t), bufferSize, filePointer);
 }
+
+

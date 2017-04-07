@@ -7,6 +7,8 @@
 #include "output.hpp"
 #include <thread>
 #include <cmath>
+#include "encoder.hpp"
+#include "decoder.hpp"
 
 void printHelp() {
 	std::cout << "tiralabra-compression" << std::endl
@@ -74,6 +76,11 @@ int main(int argc, char** argv) {
 		return EXIT_FAILURE;
 	}
 
+	if (inFileName == outFileName) {
+		std::cerr << "Input file and output file cannot be the same" << std::endl;
+		return EXIT_FAILURE;
+	}
+
 	Input input;
 	if (!input.openFile(inFileName) || input.getOpMode() == UNKNOWN) {
 		std::cerr << "Error opening file " << inFileName << std::endl;
@@ -89,7 +96,7 @@ int main(int argc, char** argv) {
 			std::cout << (opmode == COMPRESS ? "Compressing" : "Decompressing")
 				<< " file " << inFileName << std::endl;
 		} else {
-			std::cout << "File " << inFileName << " is "
+			std::cout << "File is "
 				<< (opmode == COMPRESS ? "uncompressed" : "compressed") << std::endl;
 		}
 		if (opmode == DECOMPRESS) {
@@ -100,29 +107,31 @@ int main(int argc, char** argv) {
 		}
 		std::cout << "File size: " << input.getFileSize() << std::endl;
 		if (opmode == DECOMPRESS && input.getOriginalSize() != 0.0F) {
-			float compressRatio = (float) input.getFileSize() / (float) input.getOriginalSize();
+			float compressRatio = (float) input.getFileSize() / input.getOriginalSize();
 			std::cout << "Compression ratio: "
-				<< std::round(compressRatio * 100) / 100 << std::endl;
+				<< std::round(compressRatio * 1000) / 1000 << std::endl;
 		}
 		if (!printInfo) {
 			if (nullOutput)
 				std::cout << "Discarding output" << std::endl;
 			else if (outFileName != "")
-				std::cout << "" << std::endl;
+				std::cout << "Writing output to " << outFileName << std::endl;
+			else
+				std::cout << "Writing output to stdout" << std::endl;
 		}
 	}
 
 	if (printInfo)
 		return EXIT_SUCCESS;
 
-	std::unique_ptr<Output> output;
+	std::shared_ptr<Output> output;
 
 	if (nullOutput) {
-		output = std::unique_ptr<Output>(new NullOutput());
+		output = std::shared_ptr<Output>(new NullOutput());
 	} else if (outFileName == "") {
-		output = std::unique_ptr<Output>(new StreamOutput());
+		output = std::shared_ptr<Output>(new StreamOutput());
 	} else {
-		output = std::unique_ptr<Output>(new FileOutput());
+		output = std::shared_ptr<Output>(new FileOutput());
 		if (!(*output).openFile(outFileName)) {
 			std::cerr << "Cannot write to file " << outFileName << std::endl;
 			return EXIT_FAILURE;
@@ -132,10 +141,21 @@ int main(int argc, char** argv) {
 	if (benchmark) {
 		timestamp = std::chrono::system_clock::now();
 	}
-	input.operate(*output);
+
+	if (input.getOpMode() == COMPRESS) {
+		Encoder encoder(input.getBitSize());
+		const char* errMsg = encoder.operate(input, *output);
+		if (errMsg != nullptr) {
+			std::cerr << "Error encoding: " << errMsg << std::endl;
+			return EXIT_FAILURE;
+		}
+	} else if (input.getOpMode() == DECOMPRESS) {
+
+	}
+
 	if (benchmark) {
 		std::chrono::duration<unsigned long, std::nano> elapsed(std::chrono::system_clock::now() - timestamp);
-		std::cout << "Time elapsed: " << elapsed.count() << " ns" << std::endl;
+		std::cout << "Time elapsed: " << (elapsed.count() / 1000000) << " ms" << std::endl;
 	}
 
 	return EXIT_SUCCESS;

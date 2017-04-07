@@ -39,3 +39,11 @@ add_executable(outputtest
 target_link_libraries(outputtest ${GTEST_BOTH_LIBRARIES})
 add_test(NAME OutputTest COMMAND outputtest
 	WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test-resources")
+
+add_executable(bitbuffertest
+	bitbuffertest.cpp
+	../include/bitbuffer.hpp)
+
+target_link_libraries(bitbuffertest ${GTEST_BOTH_LIBRARIES})
+add_test(NAME BitBufferTest COMMAND bitbuffertest
+	WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test-resources")

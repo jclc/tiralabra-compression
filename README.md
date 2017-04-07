@@ -35,7 +35,7 @@ If output file is not given, output will be printed to stdout.
 
 `-v` Verbose output - Print file information and progress (don't use when writing to stdout)
 
-`-b` Benchmark mode - Print execution time in nanoseconds
+`-b` Benchmark mode - Print execution time in milliseconds
 
 `-i` Print file info - Do not operate on the file, only print info
 

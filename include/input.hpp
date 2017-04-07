@@ -24,9 +24,12 @@ public:
 	bool openFile(const std::string& fileName);
 
 	/**
-	 * @brief Compress or decompress the opened file, depending on determined operation mode.
+	 * @brief Read bytes from the file.
+	 * @param dest Buffer to write in
+	 * @param bufferSize Size of buffer to write in
+	 * @return Amount of bytes read
 	 */
-	void operate(Output& out);
+	int read(uint8_t* dest, int bufferSize);
 
 	/**
 	 * @brief Get operation mode for opened file.
