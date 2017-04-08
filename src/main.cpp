@@ -18,17 +18,21 @@ void printHelp() {
 		<< "    -h: Print this help message" << std::endl
 		<< "    -v: Verbose output" << std::endl
 		<< "    -b: Benchmark mode" << std::endl
+		<< "    -w <word bit size>: Define word size in bits when encoding" << std::endl
 		<< "    -i: Only print file info" << std::endl
 		<< "    -n: Null output (disregard output, useful for benchmark)" << std::endl;
 }
 
 int main(int argc, char** argv) {
+	// Initialise default values
 	std::string inFileName = "";
 	std::string outFileName = ""; // If unset, write output to stdout
 	bool benchmark = false;
 	bool verbose = false;
 	bool nullOutput = false; // If true, throw away the output
-	bool printInfo = false;
+	bool printInfo = false; // If true, print info and exit without operating
+	int bitSize = 12;
+
 	std::chrono::time_point<std::chrono::system_clock> timestamp;
 
 	for (int i = 1; i < argc; ++i) {
@@ -45,6 +49,8 @@ int main(int argc, char** argv) {
 			// Iterate through all short opts in a single argument
 			// eg. -vb -> use options v and b
 			int j = 1;
+			int paramsToSkip = 0; // If an option takes a parameter, add to this
+			int value_w; // Value for option -w
 			while ((argv[i][j] != '\0')) {
 				switch (argv[i][j]) {
 				case 'h':
@@ -62,12 +68,28 @@ int main(int argc, char** argv) {
 				case 'i':
 					printInfo = true;
 					break;
+				case 'w':
+					++paramsToSkip;
+					if (i + paramsToSkip >= argc) {
+						std::cerr << "No value given for word option -w" << std::endl;
+						return EXIT_FAILURE;
+					}
+					value_w = std::atoi(argv[i + paramsToSkip]);
+					if (value_w < MIN_BIT_SIZE || value_w > MAX_BIT_SIZE) {
+						std::cerr << "Invalid value " << value_w
+							<< " for option -w (must be between "
+							<< MIN_BIT_SIZE << " and " << MAX_BIT_SIZE << ")" << std::endl;
+						return EXIT_FAILURE;
+					}
+					bitSize = value_w;
+					break;
 				default:
 					std::cerr << "Unknown option -" << argv[i][j] << std::endl;
 					return EXIT_FAILURE;
 				}
 				++j;
 			}
+			i += paramsToSkip;
 		}
 	}
 
@@ -101,17 +123,16 @@ int main(int argc, char** argv) {
 		}
 		if (opmode == DECOMPRESS) {
 			std::cout << "Bit size: " << (int) input.getBitSize() << std::endl;
-			std::cout << "Data segment location: " << input.getDataSegmentLoc() << std::endl;
-			std::cout << "Dictionary location: " << input.getDictionaryLoc() << std::endl;
 			std::cout << "Original size: " << input.getOriginalSize() << std::endl;
 		}
 		std::cout << "File size: " << input.getFileSize() << std::endl;
-		if (opmode == DECOMPRESS && input.getOriginalSize() != 0.0F) {
+		if (opmode == DECOMPRESS && input.getOriginalSize() != 0) {
 			float compressRatio = (float) input.getFileSize() / input.getOriginalSize();
 			std::cout << "Compression ratio: "
 				<< std::round(compressRatio * 1000) / 1000 << std::endl;
 		}
 		if (!printInfo) {
+			std::cout << "Encoding with bit size: " << bitSize << std::endl;
 			if (nullOutput)
 				std::cout << "Discarding output" << std::endl;
 			else if (outFileName != "")
@@ -143,7 +164,7 @@ int main(int argc, char** argv) {
 	}
 
 	if (input.getOpMode() == COMPRESS) {
-		Encoder encoder(input.getBitSize());
+		Encoder encoder(bitSize);
 		const char* errMsg = encoder.operate(input, *output);
 		if (errMsg != nullptr) {
 			std::cerr << "Error encoding: " << errMsg << std::endl;

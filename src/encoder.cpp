@@ -5,11 +5,6 @@
 #include <stdexcept>
 #include "bitbuffer.hpp"
 
-const int BUFFER_SIZE = 1024;
-const int MIN_BIT_SIZE = 9;
-const int MAX_BIT_SIZE = 16;
-const int MAX_STR_LEN = 512;
-
 Encoder::Encoder(int p_bitSize) {
 	if (p_bitSize < MIN_BIT_SIZE || p_bitSize > MAX_BIT_SIZE) {
 		throw std::runtime_error("Invalid bit size");
