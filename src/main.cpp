@@ -18,7 +18,7 @@ void printHelp() {
 		<< "    -h: Print this help message" << std::endl
 		<< "    -v: Verbose output" << std::endl
 		<< "    -b: Benchmark mode" << std::endl
-		<< "    -w <word bit size>: Define word size in bits when encoding" << std::endl
+		<< "    -w <word size>: Define word size in bits when encoding (12 or 16)" << std::endl
 		<< "    -i: Only print file info" << std::endl
 		<< "    -n: Null output (disregard output, useful for benchmark)" << std::endl;
 }
@@ -75,9 +75,9 @@ int main(int argc, char** argv) {
 						return EXIT_FAILURE;
 					}
 					value_w = std::atoi(argv[i + paramsToSkip]);
-					if (value_w < MIN_BIT_SIZE || value_w > MAX_BIT_SIZE) {
+					if (value_w != MIN_BIT_SIZE && value_w != MAX_BIT_SIZE) {
 						std::cerr << "Invalid value " << value_w
-							<< " for option -w (must be between "
+							<< " for option -w (must be either "
 							<< MIN_BIT_SIZE << " and " << MAX_BIT_SIZE << ")" << std::endl;
 						return EXIT_FAILURE;
 					}
