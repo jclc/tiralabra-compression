@@ -6,7 +6,7 @@
 #include "bitbuffer.hpp"
 
 Encoder::Encoder(int p_bitSize) {
-	if (p_bitSize < MIN_BIT_SIZE || p_bitSize > MAX_BIT_SIZE) {
+	if (p_bitSize != MIN_BIT_SIZE && p_bitSize != MAX_BIT_SIZE) {
 		throw std::runtime_error("Invalid bit size");
 	}
 	bitSize = p_bitSize;
@@ -34,7 +34,6 @@ const char* Encoder::operate(Input& input, Output& output) {
 
 	}
 
-
 	/*
 	 * Write end header
 	 * <Bytes>   <Content>
@@ -53,8 +52,5 @@ const char* Encoder::operate(Input& input, Output& output) {
 
 	const char nullArray[15] = "";
 	output.write(nullArray, 15);
-
-//		memcpy(tempArray, &dictionaryLoc, 8);
-//		out.write(tempArray, 8);
 	return nullptr;
 }

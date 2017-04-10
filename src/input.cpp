@@ -10,8 +10,6 @@ Input::Input() {
 	filePointer = nullptr;
 	fileSize = 0UL;
 	originalSize = 0UL;
-	dataSegmentLoc = 0UL;
-	dictionaryLoc = 0UL;
 	bitSize = 0;
 	opmode = UNKNOWN;
 }
@@ -41,8 +39,6 @@ bool Input::openFile(const std::string& fileName) {
 			fread(endHeader, sizeof(char), 24, filePointer);
 			memcpy(&originalSize, endHeader, 8);
 			memcpy(&bitSize, endHeader + 8, 1);
-			dataSegmentLoc = 8UL; // data segment always starts after magic numbers
-			memcpy(&dictionaryLoc, endHeader + 16, 8);
 		} else {
 			// Found an uncompressed file under the size of 32 bytes
 			opmode = COMPRESS;

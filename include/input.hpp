@@ -50,18 +50,6 @@ public:
 	uint64_t getOriginalSize() const {return originalSize;}
 
 	/**
-	 * @brief If opened file is a compressed file, get the location of the data segment.
-	 * @return Location of data segment in bytes from the beginning.
-	 */
-	uint64_t getDataSegmentLoc() const {return dataSegmentLoc;}
-
-	/**
-	 * @brief If opened file is a compressed file, get the location of the dictionary.
-	 * @return Location of dictionary in bytes from the beginning.
-	 */
-	uint64_t getDictionaryLoc() const {return dictionaryLoc;}
-
-	/**
 	 * @brief If opened file is a compressed file, get the bit size used for dictionary entries.
 	 * @return Bit size for dictionary entries.
 	 */
@@ -72,8 +60,6 @@ private:
 	OpMode opmode;
 	uint64_t fileSize;
 	uint64_t originalSize;
-	uint64_t dataSegmentLoc;
-	uint64_t dictionaryLoc;
 	uint8_t bitSize;
 };
 
