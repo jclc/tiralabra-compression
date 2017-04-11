@@ -73,10 +73,13 @@ TEST(BitBufferTest, Shifts12BitWordsCorrectlyWithEvenValues) {
 
 TEST(BitBufferTest, Shifts12BitWordsCorrectlyWithUnevenValues) {
 	BitBuffer bb1(12, 4, true);
+	uint16_t trash = 0xEEEE;
 	uint16_t word1 = 0xF321;
 	uint16_t word2 = 0xF654;
 	uint16_t word3 = 0xF987;
 	uint16_t word4 = 0xFCBA;
+
+	// Fill the buffer with garbage first to test
 	bb1.insert12(word1);
 	bb1.insert12(word2);
 	bb1.insert12(word3);
