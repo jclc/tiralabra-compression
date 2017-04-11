@@ -6,7 +6,7 @@
 #include "output.hpp"
 
 const int BUFFER_SIZE = 1024;
-const int MIN_BIT_SIZE = 9;
+const int MIN_BIT_SIZE = 12;
 const int MAX_BIT_SIZE = 16;
 const int MAX_STR_LEN = 512;
 

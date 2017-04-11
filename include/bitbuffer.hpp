@@ -39,6 +39,11 @@ public:
 	void shift(unsigned int wordsToShift);
 
 	/**
+	 * @brief Empties the buffer. Doesn't overwrite old values, only moves pointer.
+	 */
+	void clear();
+
+	/**
 	 * @brief Convert an array of bitSize-sized words into full 16-bit words and write
 	 * to array pointed by the pointer
 	 * @param arrayPtr Array to write in
@@ -98,15 +103,24 @@ inline void BitBuffer::shift(unsigned int wordsToShift) {
 			buffer[i*2+1] = buffer[(wordsToShift+i)*2+1];
 		}
 	} else {
+		int byteOffset = wordsToShift*3/2;
 		if (wordsToShift % 2) {
-
+			for (int b = 0; b < (wordsUsed - wordsToShift)*3/2 +1; ++b) {
+				buffer[b] = buffer[b+byteOffset] >> 4 | buffer[b+byteOffset+1] << 4;
+			}
 		} else {
-			for (int i = 0; i < ((wordsUsed - wordsToShift)/2)*3; ++i) {
-				buffer[i] = buffer[((wordsToShift/2*3)+i)];
+			// Even number of words means we can simply copy the necessary bytes
+			// without the need for bit shifting
+			for (int i = 0; i < (wordsUsed - wordsToShift)*3/2; ++i) {
+				buffer[i] = buffer[byteOffset+i];
 			}
 		}
 	}
 	wordsUsed -= wordsToShift;
+}
+
+inline void BitBuffer::clear() {
+	wordsUsed = 0;
 }
 
 inline unsigned int BitBuffer::getFullArray(uint16_t* arrayPtr) {
@@ -114,10 +128,16 @@ inline unsigned int BitBuffer::getFullArray(uint16_t* arrayPtr) {
 		for (int i = 0; i < wordsUsed; ++i) {
 			arrayPtr[i] = (buffer[i*2] | (buffer[(i*2)+1] << 8));
 		}
-		return wordsUsed;
 	} else {
-
+		for (int i = 0; i < wordsUsed; ++i) {
+			if (i % 2) {
+				arrayPtr[i] = buffer[i*3/2] >> 4 | (buffer[i*3/2+1] << 4);
+			} else {
+				arrayPtr[i] = buffer[i*3/2] | ((buffer[i*3/2+1] & 0x0F) << 8);
+			}
+		}
 	}
+	return wordsUsed;
 }
 
 #endif /* BITBUFFER_HPP */
