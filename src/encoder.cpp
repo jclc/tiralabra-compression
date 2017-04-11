@@ -4,6 +4,7 @@
 #include "stringtable.hpp"
 #include <stdexcept>
 #include "bitbuffer.hpp"
+#include <cmath>
 
 Encoder::Encoder(int p_bitSize) {
 	if (p_bitSize != MIN_BIT_SIZE && p_bitSize != MAX_BIT_SIZE) {
@@ -20,16 +21,21 @@ const char* Encoder::operate(Input& input, Output& output) {
 
 	/* Write start header
 	 * <Bytes>   <Content>
-	 * 0-7       Magic numbers ("JCLCTIRA" in ASCII)
+	 * 0-7       Magic numbers (defined in input.hpp)
 	 */
-	output.write("JCLCTIRA", 8);
+	output.write(magicNumbers, 8);
 
 	// TODO: COMPRESS AND WRITE
 
-	StringTable strTable((1 << (bitSize-1)), MAX_STR_LEN);
+	unsigned int maxEntries = std::pow(2, bitSize);
+	StringTable strTable(maxEntries, MAX_STR_LEN);
 	uint8_t inBuffer[BUFFER_SIZE];
-	input.read(inBuffer, 1);
-	int bytesRead = -1;
+	int bytesRead = input.read(inBuffer, 1);
+
+	if (bytesRead == 0)
+		throw std::runtime_error("Could not read from input file or file is empty");
+
+	uint8_t symbol = inBuffer[0];
 	while ((bytesRead = input.read(inBuffer, BUFFER_SIZE)) != 0) {
 
 	}
@@ -43,6 +49,7 @@ const char* Encoder::operate(Input& input, Output& output) {
 	 */
 	char tempArray[8];
 
+	// FIX: This restricts endianness-compatibility.
 	uint64_t originalSize = input.getOriginalSize();
 	memcpy(tempArray, &originalSize, 8);
 	output.write(tempArray, 8);

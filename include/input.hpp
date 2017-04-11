@@ -5,6 +5,9 @@
 #include <string>
 #include <cstdio>
 
+// This byte array is used to identify compressed files
+const char magicNumbers[8] = {(char)0x19,(char)0x17,(char)0x12,(char)0x06,'J','C','L','C'};
+
 typedef enum OpMode {
 	UNKNOWN,
 	COMPRESS,

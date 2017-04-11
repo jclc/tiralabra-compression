@@ -31,7 +31,7 @@ bool Input::openFile(const std::string& fileName) {
 	if (fileSize >= 32) {
 		char startHeader[8];
 		fread(startHeader, sizeof(char), 8, filePointer);
-		if (memcmp(startHeader, "JCLCTIRA", 8) == 0) {
+		if (memcmp(startHeader, magicNumbers, 8) == 0) {
 			// Found a compressed file
 			char endHeader[24];
 			opmode = DECOMPRESS;

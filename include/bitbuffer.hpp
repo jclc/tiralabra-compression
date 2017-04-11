@@ -55,7 +55,6 @@ public:
 	unsigned int wordsUsed;
 	unsigned int maxWords;
 	uint8_t* buffer;
-	uint16_t wordMask;
 };
 
 BitBuffer::BitBuffer(int p_bitSize, unsigned int p_bufferSize, bool encode) {
@@ -66,7 +65,6 @@ BitBuffer::BitBuffer(int p_bitSize, unsigned int p_bufferSize, bool encode) {
 	wordsUsed = 0U;
 	maxWords = p_bufferSize;
 	bitSize = p_bitSize;
-	wordMask = (1 << (p_bitSize - 1)) - 1;
 }
 
 BitBuffer::~BitBuffer() {

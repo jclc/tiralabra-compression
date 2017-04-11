@@ -2,21 +2,25 @@
 #define STRINGTABLE_HPP
 
 #include <cstdint>
+#include <sstream>
+
+struct symbol_ll;
 
 class StringTable {
 public:
-	StringTable(int maxSize, int stringLength);
+	StringTable(int p_maxSize, int stringLength);
 	~StringTable();
 
 	void clear();
 //	bool isIn
 
-	char* lastStr;
+	std::stringstream lastStr;
 	int lastStrLength;
-	int lastEntry;
+	uint16_t maxSize;
+	uint16_t lastSymbol;
 	uint16_t* tbl_symbol;
 	uint16_t* tbl_previous;
-	uint16_t** tbl_possibleNext;
+	symbol_ll** tbl_symbol_ll;
 };
 
 #endif /* STRINGTABLE_HPP */
