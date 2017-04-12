@@ -35,10 +35,15 @@ StringTable::~StringTable() {
 //	free(tbl_previous);
 }
 
+void StringTable::insert(uint8_t symbol) {
+	lastStr << symbol;
+}
+
 void StringTable::clear() {
 
 	for (int i = 0; i < maxSize; ++i)
 		if (tbl_symbol_ll[i])
 			delete tbl_symbol_ll[i];
 
+	lastSymbol = 255;
 }

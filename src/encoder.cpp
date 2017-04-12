@@ -27,18 +27,27 @@ const char* Encoder::operate(Input& input, Output& output) {
 
 	// TODO: COMPRESS AND WRITE
 
-	unsigned int maxEntries = std::pow(2, bitSize);
+	unsigned int maxEntries = std::pow(2, bitSize) - 1;
 	StringTable strTable(maxEntries, MAX_STR_LEN);
 	uint8_t inBuffer[BUFFER_SIZE];
+	BitBuffer bb(bitSize, BUFFER_SIZE, true);
 	int bytesRead = input.read(inBuffer, 1);
+
 
 	if (bytesRead == 0)
 		throw std::runtime_error("Could not read from input file or file is empty");
 
-	uint8_t symbol = inBuffer[0];
-	while ((bytesRead = input.read(inBuffer, BUFFER_SIZE)) != 0) {
+	strTable.insert(inBuffer[0]);
 
+	while ((bytesRead = input.read(inBuffer, BUFFER_SIZE)) != 0) {
+		for (int i = 0; i < bytesRead; ++i) {
+			bb.insert(inBuffer[i]);
+		}
+		output.write((char*) bb.buffer, bb.getFullBytes());
+		bb.shift(bb.getFullWords());
 	}
+	// Write the remaining bytes
+	output.write((char*) bb.buffer, bb.getTotalBytes());
 
 	/*
 	 * Write end header

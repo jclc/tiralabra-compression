@@ -12,10 +12,10 @@ TEST(BitBufferTest, 12BitWordsStoredCorrectly) {
 	uint16_t word1 = 0x4321;
 	uint16_t word2 = 0x8765;
 
-	bb.insert12(word1);
+	bb.insert(word1);
 	ASSERT_EQ(1, bb.wordsUsed)
 		<< "After inserting a word, doesn't store correct amount of words";
-	bb.insert12(word2);
+	bb.insert(word2);
 	ASSERT_EQ(2, bb.wordsUsed)
 		<< "After inserting a second word, doesn't store correct amount of words";
 
@@ -35,10 +35,10 @@ TEST(BitBufferTest, 16BitWordsStoredCorrectly) {
 	uint16_t word1 = 0x4321;
 	uint16_t word2 = 0x8765;
 
-	bb.insert16(word1);
+	bb.insert(word1);
 	ASSERT_EQ(1, bb.wordsUsed)
 		<< "After inserting a word, doesn't store correct amount of words";
-	bb.insert16(word2);
+	bb.insert(word2);
 	ASSERT_EQ(2, bb.wordsUsed)
 		<< "After inserting a second word, doesn't store correct amount of words";
 
@@ -56,10 +56,10 @@ TEST(BitBufferTest, Shifts12BitWordsCorrectlyWithEvenValues) {
 	uint16_t word2 = 0xF654;
 	uint16_t word3 = 0xF987;
 	uint16_t word4 = 0xFCBA;
-	bb1.insert12(word1);
-	bb1.insert12(word2);
-	bb1.insert12(word3);
-	bb1.insert12(word4);
+	bb1.insert(word1);
+	bb1.insert(word2);
+	bb1.insert(word3);
+	bb1.insert(word4);
 
 	bb1.shift(2);
 	ASSERT_EQ(2, bb1.wordsUsed) << "Doesn't store correct amount of bits after shifting";
@@ -80,10 +80,10 @@ TEST(BitBufferTest, Shifts12BitWordsCorrectlyWithUnevenValues) {
 	uint16_t word4 = 0xFCBA;
 
 	// Fill the buffer with garbage first to test
-	bb1.insert12(word1);
-	bb1.insert12(word2);
-	bb1.insert12(word3);
-	bb1.insert12(word4);
+	bb1.insert(word1);
+	bb1.insert(word2);
+	bb1.insert(word3);
+	bb1.insert(word4);
 
 	bb1.shift(1);
 	ASSERT_EQ(3, bb1.wordsUsed) << "Doesn't store correct amount of bits after shifting";
@@ -105,12 +105,12 @@ TEST(BitBufferTest, Shifts16BitWordsCorrectly) {
 	uint16_t word4 = 0xBF23;
 	uint16_t word5 = 0xECD1;
 	uint16_t word6 = 0xFDBA;
-	bb1.insert16(word1);
-	bb1.insert16(word2);
-	bb1.insert16(word3);
-	bb1.insert16(word4);
-	bb1.insert16(word5);
-	bb1.insert16(word6);
+	bb1.insert(word1);
+	bb1.insert(word2);
+	bb1.insert(word3);
+	bb1.insert(word4);
+	bb1.insert(word5);
+	bb1.insert(word6);
 
 	ASSERT_EQ(6, bb1.wordsUsed) << "Doesn't store correct amount of words before shifting";
 	bb1.shift(3);
@@ -131,12 +131,12 @@ TEST(BitBufferTest, GetFullArrayWorksWith12BitWords) {
 	uint16_t word4 = 0xFF23;
 	uint16_t word5 = 0xFCD1;
 	uint16_t word6 = 0xFDBA;
-	bb1.insert12(word1);
-	bb1.insert12(word2);
-	bb1.insert12(word3);
-	bb1.insert12(word4);
-	bb1.insert12(word5);
-	bb1.insert12(word6);
+	bb1.insert(word1);
+	bb1.insert(word2);
+	bb1.insert(word3);
+	bb1.insert(word4);
+	bb1.insert(word5);
+	bb1.insert(word6);
 
 	ASSERT_EQ(6, bb1.wordsUsed);
 	uint16_t retArray[5];
@@ -158,12 +158,12 @@ TEST(BitBufferTest, GetFullArrayWorksWith16BitWords) {
 	uint16_t word4 = 0xBF23;
 	uint16_t word5 = 0xECD1;
 	uint16_t word6 = 0xFDBA;
-	bb1.insert16(word1);
-	bb1.insert16(word2);
-	bb1.insert16(word3);
-	bb1.insert16(word4);
-	bb1.insert16(word5);
-	bb1.insert16(word6);
+	bb1.insert(word1);
+	bb1.insert(word2);
+	bb1.insert(word3);
+	bb1.insert(word4);
+	bb1.insert(word5);
+	bb1.insert(word6);
 
 	ASSERT_EQ(6, bb1.wordsUsed);
 	uint16_t retArray[5];

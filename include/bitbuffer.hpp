@@ -24,13 +24,13 @@ public:
 	 * @brief Insert 12 first bits of a word in the bit buffer
 	 * @param word
 	 */
-	void insert12(uint16_t word);
+	void insert(uint16_t word);
 
-	/**
-	 * @brief Insert 16 first bits of a word in the bit buffer
-	 * @param word
-	 */
-	void insert16(uint16_t word);
+//	/**
+//	 * @brief Insert 16 first bits of a word in the bit buffer
+//	 * @param word
+//	 */
+//	void insert16(uint16_t word);
 
 	/**
 	 * @brief Remove N (bitSize-sized) words and shift the remaining words to the beginning
@@ -50,6 +50,24 @@ public:
 	 * @return Number of elements written
 	 */
 	unsigned int getFullArray(uint16_t* arrayPtr);
+
+	/**
+	 * @brief Return the amount of words that don't leave any incomplete bytes
+	 * @return
+	 */
+	unsigned int getFullWords();
+
+	/**
+	 * @brief Get amount of bytes used by words with no incomplete bytes
+	 * @return
+	 */
+	unsigned int getFullBytes();
+
+	/**
+	 * @brief Get total amount of bytes in use, including incomplete bytes
+	 * @return
+	 */
+	unsigned int getTotalBytes();
 
 	int bitSize;
 	unsigned int wordsUsed;
@@ -71,21 +89,20 @@ BitBuffer::~BitBuffer() {
 	free(buffer);
 }
 
-inline void BitBuffer::insert12(uint16_t word) {
-	unsigned int i = wordsUsed + (wordsUsed/2);
-	if (wordsUsed % 2) {
-		buffer[i] |= (word << 4) & 0xF0;
-		buffer[i+1] = (word >> 4);
+inline void BitBuffer::insert(uint16_t word) {
+	if (bitSize == 16) {
+		buffer[wordsUsed*2] = word;
+		buffer[(wordsUsed*2) + 1] = word >> 8;
 	} else {
-		buffer[i] = word;
-		buffer[i+1] = (word >> 8) & 0x0F;
+		unsigned int i = wordsUsed + (wordsUsed/2);
+		if (wordsUsed % 2) {
+			buffer[i] |= (word << 4) & 0xF0;
+			buffer[i+1] = (word >> 4);
+		} else {
+			buffer[i] = word;
+			buffer[i+1] = (word >> 8) & 0x0F;
+		}
 	}
-	++wordsUsed;
-}
-
-inline void BitBuffer::insert16(uint16_t word) {
-	buffer[wordsUsed*2] = word;
-	buffer[(wordsUsed*2) + 1] = word >> 8;
 	++wordsUsed;
 }
 
@@ -138,6 +155,32 @@ inline unsigned int BitBuffer::getFullArray(uint16_t* arrayPtr) {
 		}
 	}
 	return wordsUsed;
+}
+
+inline unsigned int BitBuffer::getFullWords() {
+	if (bitSize == 16) {
+		// Since 16-bit words are always divisible by 8, return wordsUsed
+		return wordsUsed;
+	} else {
+		// Uneven amounts of 12-bit words leave the last bit halved
+		return wordsUsed - (wordsUsed % 2);
+	}
+}
+
+inline unsigned int BitBuffer::getFullBytes() {
+	if (bitSize == 16) {
+		return wordsUsed * 2;
+	} else {
+		return getFullWords() * 3 / 2;
+	}
+}
+
+inline unsigned int BitBuffer::getTotalBytes() {
+	if (bitSize == 16) {
+		return wordsUsed * 2;
+	} else {
+		return wordsUsed * 3 / 2 + (wordsUsed % 2);
+	}
 }
 
 #endif /* BITBUFFER_HPP */
