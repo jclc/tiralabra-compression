@@ -36,7 +36,7 @@ TEST(InputTest, ReadingWorks) {
 	uint8_t buffer[20];
 	int returned = in.read(buffer, 20);
 	EXPECT_EQ(10, returned) << "Didn't read correct amount of bytes";
-	buffer[11] = '\0';
+	buffer[10] = '\0';
 	EXPECT_STREQ("0123456789", (char*) buffer);
 }
 
