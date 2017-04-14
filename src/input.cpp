@@ -1,8 +1,3 @@
-// This is needed to prevent a stupid macro in the Windows API header
-#if defined _WIN32 && !defined NOMINMAX
-#define NOMINMAX
-#endif
-
 #include "input.hpp"
 #include "encoder.hpp"
 #include <cstring>
