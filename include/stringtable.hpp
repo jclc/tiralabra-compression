@@ -83,7 +83,7 @@ inline uint16_t StringTable::getNextEntry(uint16_t str, uint8_t sym) {
 	// Go through elements in the linked list
 	while (link != nullptr) {
 		if (sym == tbl_symbol[link->nextSymbol])
-			return true;
+			return link->nextSymbol;
 		link = link->nextLink;
 	}
 	return 0;
@@ -113,9 +113,11 @@ inline void StringTable::newLink(uint16_t str, uint16_t next) {
 
 inline void StringTable::clearTable() {
 
-	for (int i = 0; i < maxSymbols; ++i)
-		if (tbl_symbol_ll[i])
+	for (int i = 0; i < maxSymbols; ++i) {
+		if (tbl_symbol_ll[i]) {
 			delete tbl_symbol_ll[i];
+		}
+	}
 
 	lastSymbol = 255;
 }

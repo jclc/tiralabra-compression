@@ -20,11 +20,18 @@ public:
 	~Input();
 
 	/**
-	 * @brief Open a file for compression. Operation mode will be determined based on the file.
+	 * @brief Open a file for operation. Operation mode will be determined based on the file.
 	 * @param fileName Name of the file to be opened.
 	 * @return Returns true if file was opened successfully.
 	 */
 	bool openFile(const std::string& fileName);
+
+	/**
+	 * @brief Set boundaries where to start reading and where to end reading.
+	 * @param start Starting location in bytes
+	 * @param end Last byte to read
+	 */
+	void setBounds(unsigned long start, unsigned long end);
 
 	/**
 	 * @brief Read bytes from the file.
@@ -64,6 +71,8 @@ private:
 	uint64_t fileSize;
 	uint64_t originalSize;
 	uint8_t bitSize;
+	uint64_t readStart;
+	uint64_t readEnd;
 };
 
 #endif /* INPUT_HPP */

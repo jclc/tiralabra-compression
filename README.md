@@ -25,7 +25,7 @@ make
 
 ## Usage
 
-`tl-compression [options] <input file> [output file]`
+`tiracomp [options] <input file> [output file]`
 
 Uncompressed files will be compressed and compressed files are detected as such and are uncompressed.
 

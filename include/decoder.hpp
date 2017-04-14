@@ -6,15 +6,10 @@
 
 static char decoderErrorMsg[256] = "";
 
-class Decoder {
-public:
-	Decoder(int p_bitSize);
-	~Decoder();
+namespace decoder {
 
-	const char* operate(Input& input, Output& output);
+const char* decode(Input& input, Output& output);
 
-protected:
-	int bitSize;
-};
+}
 
 #endif /* DECODER_HPP */

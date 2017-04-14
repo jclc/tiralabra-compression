@@ -6,7 +6,7 @@
 #include "bitbuffer.hpp"
 #include <cmath>
 
-const char* Encoder::operate(Input& input, Output& output) {
+const char* encoder::encode(Input& input, Output& output, unsigned int bitSize) {
 
 	/* Write start header
 	 * <Bytes>   <Content>
@@ -14,7 +14,6 @@ const char* Encoder::operate(Input& input, Output& output) {
 	 */
 	output.write(magicNumbers, 8);
 
-	unsigned int bitSize = input.getBitSize();
 	if (bitSize != MIN_BIT_SIZE && bitSize != MAX_BIT_SIZE)
 		throw std::runtime_error("Invalid bit size");
 
@@ -34,15 +33,18 @@ const char* Encoder::operate(Input& input, Output& output) {
 	if (bytesRead == 0)
 		throw std::runtime_error("Could not read from input file or file is empty");
 
+	// "String" (str) is an index on the string table. We initialise it with
+	// the first symbol in the file
 	uint16_t str = (uint16_t) readBuffer[0];
 	uint16_t temp;
+	// "Symbol" (sym) is the last read character in the file.
 	uint8_t sym;
 
 	while ((bytesRead = input.read(readBuffer, BUFFER_SIZE)) != 0) {
 		for (int i = 0; i < bytesRead; ++i) {
 			sym = readBuffer[i];
 			temp = strTable.getNextEntry(str, sym);
-			if (temp) {
+			if (temp != 0) {
 				// String + Symbol is already in the string table
 				str = temp;
 			} else {
@@ -52,9 +54,17 @@ const char* Encoder::operate(Input& input, Output& output) {
 				str = (uint16_t) sym;
 			}
 
+			// If bitbuffer is full, flush it mid-iteration
 			if (bb.getFullBytes() >= maxBytes) {
 				output.write((char*) bb.buffer, bb.getFullBytes());
 				bb.shift(bb.getFullWords());
+			}
+
+			if (strTable.isFull()) {
+				bb.insert(0xFFFF);
+				output.write((char*) bb.buffer, bb.getFullBytes());
+				bb.shift(bb.getFullWords());
+				strTable.clearTable();
 			}
 		}
 		output.write((char*) bb.buffer, bb.getFullBytes());

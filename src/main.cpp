@@ -12,7 +12,7 @@
 
 void printHelp() {
 	std::cout << "tiralabra-compression" << std::endl
-		<< "Usage: `tl-compression [options] <input file> [output file]\n" << std::endl
+		<< "Usage: tl-compression [options] <input file> [output file]\n" << std::endl
 		<< "If output file is not specified, output will be printed to stdout" << std::endl
 		<< "Options:" << std::endl
 		<< "    -h:             Print this help message" << std::endl
@@ -164,14 +164,17 @@ int main(int argc, char** argv) {
 	}
 
 	if (input.getOpMode() == COMPRESS) {
-		Encoder encoder;
-		const char* errMsg = encoder.operate(input, *output);
+		const char* errMsg = encoder::encode(input, *output, bitSize);
 		if (errMsg != nullptr) {
 			std::cerr << "Error encoding: " << errMsg << std::endl;
 			return EXIT_FAILURE;
 		}
 	} else if (input.getOpMode() == DECOMPRESS) {
-
+		const char* errMsg = decoder::decode(input, *output);
+		if (errMsg != nullptr) {
+			std::cerr << "Error decoding: " << errMsg << std::endl;
+			return EXIT_FAILURE;
+		}
 	}
 
 	if (benchmark) {

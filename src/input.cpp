@@ -11,6 +11,8 @@ Input::Input() {
 	fileSize = 0UL;
 	originalSize = 0UL;
 	bitSize = 0;
+	readStart = 0UL;
+	readEnd = 0UL;
 	opmode = UNKNOWN;
 }
 
@@ -27,6 +29,9 @@ bool Input::openFile(const std::string& fileName) {
 	fseek(filePointer, 0, SEEK_END);
 	fileSize = ftell(filePointer);
 	fseek(filePointer, 0, SEEK_SET);
+
+	readStart = 0;
+	readEnd = fileSize - 1;
 
 	if (fileSize >= 32) {
 		char startHeader[8];
@@ -49,11 +54,14 @@ bool Input::openFile(const std::string& fileName) {
 	}
 
 	if (opmode == COMPRESS) {
-		bitSize = 16;
 		originalSize = fileSize;
 	}
 	fseek(filePointer, 0, SEEK_SET);
 	return true;
+}
+
+void Input::setBounds(unsigned long start, unsigned long end) {
+
 }
 
 int Input::read(uint8_t *dest, int bufferSize) {
