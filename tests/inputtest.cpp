@@ -3,28 +3,53 @@
 #include "input.hpp"
 
 TEST(InputTest, OpenFile) {
-	Input in1;
-	bool openSuccess = in1.openFile("lorem_ipsum_eng.txt");
+	Input in;
+	bool openSuccess = in.openFile("lorem_ipsum_eng.txt");
 	ASSERT_TRUE(openSuccess) << "Failed to open file lorem_ipsum_eng.txt";
-	TestOutput out1;
 }
 
 TEST(InputTest, RecogniseUncompressedFile) {
-	Input in1;
-	bool openSuccess = in1.openFile("ebook.txt");
+	Input in;
+	bool openSuccess = in.openFile("ebook.txt");
 	ASSERT_TRUE(openSuccess) << "Failed to open file ebook.txt";
-	EXPECT_EQ(COMPRESS, in1.getOpMode()) << "Failed to assign opmode for ebook.txt";
-	EXPECT_EQ(338791UL, in1.getFileSize()) << "Incorrect file size";
+	EXPECT_EQ(COMPRESS, in.getOpMode()) << "Failed to assign opmode for ebook.txt";
+	EXPECT_EQ(338791UL, in.getFileSize()) << "Incorrect file size";
 }
 
 TEST(InputTest, RecogniseCompressedFile) {
-	Input in1;
-	std::string filepath1 = "fake_compressed_file.bin";
-	bool openSuccess = in1.openFile("fake_compressed_file.bin");
-	ASSERT_TRUE(openSuccess) << "Failed to open file " << filepath1;
-	EXPECT_EQ(DECOMPRESS, in1.getOpMode())
+	Input in;
+	std::string filepath = "fake_compressed_file.bin";
+	bool openSuccess = in.openFile(filepath);
+	ASSERT_TRUE(openSuccess) << "Failed to open file " << filepath;
+	EXPECT_EQ(DECOMPRESS, in.getOpMode())
 		<< "Failed to assign opmode for fake_compressed_file.bin";
-	EXPECT_EQ(16, (int) in1.getBitSize()) << "Incorrect bit size";
-	EXPECT_EQ(256UL, in1.getOriginalSize()) << "Incorrect original size";
-	EXPECT_EQ(279UL, in1.getFileSize()) << "Incorrect file size";
+	EXPECT_EQ(16, (int) in.getBitSize()) << "Incorrect bit size";
+	EXPECT_EQ(256UL, in.getOriginalSize()) << "Incorrect original size";
+	EXPECT_EQ(279UL, in.getFileSize()) << "Incorrect file size";
+}
+
+TEST(InputTest, ReadingWorks) {
+	Input in;
+	std::string filepath = "numbers.txt";
+	bool openSuccess = in.openFile(filepath);
+	ASSERT_TRUE(openSuccess) << "Failed to open file " << filepath;
+	uint8_t buffer[20];
+	int returned = in.read(buffer, 20);
+	EXPECT_EQ(10, returned) << "Didn't read correct amount of bytes";
+	buffer[11] = '\0';
+	EXPECT_STREQ("0123456789", (char*) buffer);
+}
+
+TEST(InputTest, ReadingWithBoundsWorks) {
+	Input in;
+	std::string filepath = "ebook.txt";
+	bool openSuccess = in.openFile(filepath);
+	ASSERT_TRUE(openSuccess) << "Failed to open file " << filepath;
+	// There are 3 magic numbers at the start of the file which we have to account for
+	in.setBounds(15, 24);
+	uint8_t buffer[20];
+	int returned = in.read(buffer, 20);
+	EXPECT_EQ(9, returned) << "Didn't read correct amount of bytes";
+	buffer[10] = '\0';
+	EXPECT_STREQ("Gutenberg", (char*) buffer);
 }

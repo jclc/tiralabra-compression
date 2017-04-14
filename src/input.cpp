@@ -1,10 +1,15 @@
+// This is needed to prevent a stupid macro in the Windows API header
+#if defined _WIN32 && !defined NOMINMAX
+#define NOMINMAX
+#endif
+
 #include "input.hpp"
 #include "encoder.hpp"
 #include <cstring>
 #include <cstdint>
 #include <cstdio>
 #include <iostream>
-
+#include <algorithm>
 
 Input::Input() {
 	filePointer = nullptr;
@@ -31,7 +36,7 @@ bool Input::openFile(const std::string& fileName) {
 	fseek(filePointer, 0, SEEK_SET);
 
 	readStart = 0;
-	readEnd = fileSize - 1;
+	readEnd = fileSize;
 
 	if (fileSize >= 32) {
 		char startHeader[8];
@@ -61,11 +66,14 @@ bool Input::openFile(const std::string& fileName) {
 }
 
 void Input::setBounds(unsigned long start, unsigned long end) {
-
+	readStart = start;
+	readEnd = end;
+	fseek(filePointer, start, SEEK_SET);
 }
 
 int Input::read(uint8_t *dest, int bufferSize) {
-	return fread(dest, sizeof(uint8_t), bufferSize, filePointer);
+	unsigned long bytesToRead = std::min(bufferSize, int(readEnd - ftell(filePointer)));
+	return fread(dest, sizeof(uint8_t), bytesToRead, filePointer);
 }
 
 
