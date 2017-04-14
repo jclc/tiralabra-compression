@@ -14,8 +14,7 @@ static char encoderErrorMsg[256] = "";
 
 class Encoder {
 public:
-	Encoder(int p_bitSize);
-	~Encoder();
+	Encoder() {}
 
 	/**
 	 * @brief Read input from input object, encode and write into output
@@ -25,8 +24,6 @@ public:
 	 */
 	const char* operate(Input& input, Output& output);
 
-protected:
-	int bitSize;
 };
 
 #endif /* ENCODER_HPP */

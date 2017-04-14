@@ -50,6 +50,7 @@ bool Input::openFile(const std::string& fileName) {
 
 	if (opmode == COMPRESS) {
 		bitSize = 16;
+		originalSize = fileSize;
 	}
 	fseek(filePointer, 0, SEEK_SET);
 	return true;

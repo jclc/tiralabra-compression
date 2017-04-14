@@ -15,12 +15,12 @@ void printHelp() {
 		<< "Usage: `tl-compression [options] <input file> [output file]\n" << std::endl
 		<< "If output file is not specified, output will be printed to stdout" << std::endl
 		<< "Options:" << std::endl
-		<< "    -h: Print this help message" << std::endl
-		<< "    -v: Verbose output" << std::endl
-		<< "    -b: Benchmark mode" << std::endl
+		<< "    -h:             Print this help message" << std::endl
+		<< "    -v:             Verbose output" << std::endl
+		<< "    -b:             Benchmark mode" << std::endl
 		<< "    -w <word size>: Define word size in bits when encoding (12 or 16)" << std::endl
-		<< "    -i: Only print file info" << std::endl
-		<< "    -n: Null output (disregard output, useful for benchmark)" << std::endl;
+		<< "    -i:             Only print file info" << std::endl
+		<< "    -n:             Null output (disregard output, useful for benchmark)" << std::endl;
 }
 
 int main(int argc, char** argv) {
@@ -164,7 +164,7 @@ int main(int argc, char** argv) {
 	}
 
 	if (input.getOpMode() == COMPRESS) {
-		Encoder encoder(bitSize);
+		Encoder encoder;
 		const char* errMsg = encoder.operate(input, *output);
 		if (errMsg != nullptr) {
 			std::cerr << "Error encoding: " << errMsg << std::endl;
