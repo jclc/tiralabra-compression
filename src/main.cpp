@@ -12,7 +12,7 @@
 
 void printHelp() {
 	std::cout << "tiralabra-compression" << std::endl
-		<< "Usage: tl-compression [options] <input file> [output file]\n" << std::endl
+		<< "Usage: tiracomp [options] <input file> [output file]\n" << std::endl
 		<< "If output file is not specified, output will be printed to stdout" << std::endl
 		<< "Options:" << std::endl
 		<< "    -h:             Print this help message" << std::endl
@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
 					if (value_w != MIN_BIT_SIZE && value_w != MAX_BIT_SIZE) {
 						std::cerr << "Invalid value " << value_w
 							<< " for option -w (must be either "
-							<< MIN_BIT_SIZE << " and " << MAX_BIT_SIZE << ")" << std::endl;
+							<< MIN_BIT_SIZE << " or " << MAX_BIT_SIZE << ")" << std::endl;
 						return EXIT_FAILURE;
 					}
 					bitSize = value_w;
@@ -164,15 +164,17 @@ int main(int argc, char** argv) {
 	}
 
 	if (input.getOpMode() == COMPRESS) {
-		const char* errMsg = encoder::encode(input, *output, bitSize);
-		if (errMsg != nullptr) {
-			std::cerr << "Error encoding: " << errMsg << std::endl;
+		try {
+			encoder::encode(input, *output, bitSize, true);
+		} catch (std::exception e) {
+			std::cerr << "Error encoding: " << e.what() << std::endl;
 			return EXIT_FAILURE;
 		}
 	} else if (input.getOpMode() == DECOMPRESS) {
-		const char* errMsg = decoder::decode(input, *output);
-		if (errMsg != nullptr) {
-			std::cerr << "Error decoding: " << errMsg << std::endl;
+		try {
+			decoder::decode(input, *output);
+		} catch (std::exception e) {
+			std::cerr << "Error decoding: " << e.what() << std::endl;
 			return EXIT_FAILURE;
 		}
 	}

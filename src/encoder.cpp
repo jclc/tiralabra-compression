@@ -6,19 +6,21 @@
 #include "bitbuffer.hpp"
 #include <cmath>
 
-const char* encoder::encode(Input& input, Output& output, unsigned int bitSize) {
+void encoder::encode(Input& input, Output& output, unsigned int bitSize, bool header) {
 
-	/* Write start header
-	 * <Bytes>   <Content>
-	 * 0-7       Magic numbers (defined in input.hpp)
-	 */
-	output.write(magicNumbers, 8);
+	if (header) {
+		/* Write start header
+		 * <Bytes>   <Content>
+		 * 0-7       Magic numbers (defined in input.hpp)
+		 */
+		output.write(magicNumbers, 8);
+	}
 
 	if (bitSize != MIN_BIT_SIZE && bitSize != MAX_BIT_SIZE)
 		throw std::runtime_error("Invalid bit size");
 
 	unsigned int maxEntries = std::pow(2, bitSize) - 1;
-	StringTable strTable(maxEntries, MAX_STR_LEN);
+	StringTable strTable(maxEntries);
 	uint8_t readBuffer[BUFFER_SIZE];
 	BitBuffer bb(bitSize, BUFFER_SIZE, true);
 
@@ -75,24 +77,26 @@ const char* encoder::encode(Input& input, Output& output, unsigned int bitSize) 
 	bb.insert(str);
 	output.write((char*) bb.buffer, bb.getTotalBytes());
 
-	/*
-	 * Write end header
-	 * <Bytes>   <Content>
-	 * 0-7       Original size (unsigned long)
-	 * 8         Bit size of code words
-	 * 9-23      Reserved
-	 */
-	char tempArray[8];
+	if (header) {
+		/*
+		 * Write end header
+		 * <Bytes>   <Content>
+		 * 0-7       Original size (unsigned long)
+		 * 8         Bit size of code words
+		 * 9-23      Reserved
+		 */
+		char tempArray[8];
 
-	// FIX: This restricts endianness-compatibility.
-	uint64_t originalSize = input.getOriginalSize();
-	memcpy(tempArray, &originalSize, 8);
-	output.write(tempArray, 8);
+		// FIX: This restricts endianness-compatibility.
+		uint64_t originalSize = input.getOriginalSize();
+		memcpy(tempArray, &originalSize, 8);
+		output.write(tempArray, 8);
 
-	memcpy(tempArray, &bitSize, 1);
-	output.write(tempArray, 1);
+		memcpy(tempArray, &bitSize, 1);
+		output.write(tempArray, 1);
 
-	const char nullArray[15] = "";
-	output.write(nullArray, 15);
-	return nullptr;
+		const char nullArray[15] = "";
+		output.write(nullArray, 15);
+	}
+	return;
 }

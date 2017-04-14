@@ -46,6 +46,7 @@ private:
 class StreamOutput: public Output {
 public:
 	StreamOutput() {}
+	virtual ~StreamOutput() override {}
 
 	/**
 	 * @brief Write data into stdout. Can be called consecutively to write in chunks.
@@ -61,6 +62,7 @@ public:
 class NullOutput: public Output {
 public:
 	NullOutput() {}
+	virtual ~NullOutput() override {}
 
 	/**
 	 * @brief Do nothing.

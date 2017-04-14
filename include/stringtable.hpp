@@ -8,7 +8,7 @@ struct symbol_ll;
 
 class StringTable {
 public:
-	StringTable(int p_maxSize, int stringLength);
+	StringTable(int p_maxSize);
 	~StringTable();
 
 	/// Empty the table
@@ -52,7 +52,7 @@ struct symbol_ll {
 	symbol_ll* nextLink;
 };
 
-StringTable::StringTable(int p_maxSize, int stringLength) {
+StringTable::StringTable(int p_maxSize) {
 	maxSymbols = p_maxSize;
 	tbl_symbol = (uint8_t*) malloc(sizeof(uint8_t) * maxSymbols);
 	for (int i = 0; i < 256; ++i)

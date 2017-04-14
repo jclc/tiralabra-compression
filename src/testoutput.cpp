@@ -3,23 +3,27 @@
  */
 #include "testoutput.hpp"
 #include <cstring>
+#include <cstdio>
 
 TestOutput::TestOutput() {
 	bufferSize = 1024UL;
-	buffer = (char*) malloc(sizeof(char) * size);
+	buffer = (char*) malloc(sizeof(char) * bufferSize);
 	size = 0UL;
 }
 
 TestOutput::~TestOutput() {
-	free(buffer);
+	if (buffer) {
+		free(buffer);
+		buffer = nullptr;
+	}
 }
 
-void TestOutput::write(const char* data, unsigned long i_bufferSize) {
-	while (bufferSize < size + i_bufferSize)
+void TestOutput::write(const char* data, unsigned long p_bufferSize) {
+	while (bufferSize < size + p_bufferSize)
 		enlargeBuffer();
 
-	memcpy(buffer + size, data, i_bufferSize);
-	size += i_bufferSize;
+	memcpy(buffer + size, data, p_bufferSize);
+	size += p_bufferSize;
 
 }
 

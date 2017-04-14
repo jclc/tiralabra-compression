@@ -12,8 +12,8 @@
 class TestOutput: public Output {
 public:
 	TestOutput();
-	~TestOutput();
-	virtual void write(const char* data, unsigned long i_bufferSize);
+	virtual ~TestOutput() override;
+	virtual void write(const char* data, unsigned long p_bufferSize) override;
 
 	/**
 	 * @brief Get the number of bytes written to the buffer
