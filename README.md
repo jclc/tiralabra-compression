@@ -33,15 +33,14 @@ If output file is not given, output will be printed to stdout.
 
 ### Options
 
-`-h` Print help message
-
-`-v` Verbose output - Print file information and progress (don't use when writing to stdout)
-
-`-b` Benchmark mode - Print execution time in milliseconds
-
-`-i` Print file info - Do not operate on the file, only print info
-
-`-n` Null output - Discard output, useful for benchmarking without file I/O
+| Switch | Parameter | Description |
+| ------ | --------- | ----------- |
+| `-h`   |           | Print help message |
+| `-v`   |           | Verbose output - Print file information and progress (don't use when writing to stdout) |
+| `-b`   |           | Benchmark mode - Print execution time in milliseconds |
+| `-w`   | word size | Define code word size in bits when decoding (either 12 or 16) |
+| `-i`   |           | Print file info - Do not operate on the file, only print info |
+| `-n`   |           | Null output - Discard output, useful for benchmarking without file I/O |
 
 Options can be entered separately `-v -b -n`, together `-vbn` or both `-vb -n`. They can also be entered before or after other arguments.
 
