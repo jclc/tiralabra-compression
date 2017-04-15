@@ -71,4 +71,6 @@ int Input::read(uint8_t *dest, int bufferSize) {
 	return fread(dest, sizeof(uint8_t), bytesToRead, filePointer);
 }
 
-
+uint64_t Input::getCurrentPos() const {
+	return ftell(filePointer);
+}

@@ -116,6 +116,7 @@ inline void StringTable::clearTable() {
 	for (int i = 0; i < maxSymbols; ++i) {
 		if (tbl_symbol_ll[i]) {
 			delete tbl_symbol_ll[i];
+			tbl_symbol_ll[i] = nullptr;
 		}
 	}
 

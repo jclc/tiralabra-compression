@@ -4,6 +4,8 @@
 #include <cstdint>
 #include "input.hpp"
 #include "output.hpp"
+#include "progressbar.hpp"
+#include <memory>
 
 const int BUFFER_SIZE = 4096;
 const int MIN_BIT_SIZE = 12;
@@ -21,7 +23,9 @@ namespace encoder {
  * @param header False if header (both at the start and the end) should be omitted
  * @return nullptr if successful, otherwise pointer to an error string
  */
-void encode(Input& input, Output& output, unsigned int p_bitSize, bool header);
+void encode(Input& input, Output& output,
+	unsigned int p_bitSize, bool header,
+	std::shared_ptr<ProgressBar> progress);
 
 }
 

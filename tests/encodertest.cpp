@@ -10,7 +10,7 @@ TEST(EncoderTest, BasicFileWithHeader) {
 	ASSERT_TRUE(in.openFile("numbers.txt")) << "Couldn't open numbers.txt";
 	std::shared_ptr<Output> out = std::shared_ptr<Output>(new TestOutput());
 	try {
-		encoder::encode(in, *out, 16, true);
+		encoder::encode(in, *out, 16, true, nullptr);
 	} catch (std::exception e) {
 		ASSERT_FALSE(1) << e.what();
 	}

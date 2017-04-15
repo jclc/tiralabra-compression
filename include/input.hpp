@@ -65,6 +65,10 @@ public:
 	 */
 	uint8_t getBitSize() const {return bitSize;}
 
+	uint64_t getCurrentPos() const;
+	uint64_t getReadStart() const {return readStart;}
+	uint64_t getReadEnd() const {return readEnd;}
+
 private:
 	FILE* filePointer;
 	OpMode opmode;

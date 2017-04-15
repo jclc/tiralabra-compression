@@ -9,6 +9,7 @@
 #include <cmath>
 #include "encoder.hpp"
 #include "decoder.hpp"
+#include "progressbar.hpp"
 
 void printHelp() {
 	std::cout << "tiralabra-compression" << std::endl
@@ -32,6 +33,7 @@ int main(int argc, char** argv) {
 	bool nullOutput = false; // If true, throw away the output
 	bool printInfo = false; // If true, print info and exit without operating
 	int bitSize = 12;
+	std::shared_ptr<ProgressBar> progress = nullptr;
 
 	std::chrono::time_point<std::chrono::system_clock> timestamp;
 
@@ -117,6 +119,7 @@ int main(int argc, char** argv) {
 		if (!printInfo) {
 			std::cout << (opmode == COMPRESS ? "Compressing" : "Decompressing")
 				<< " file " << inFileName << std::endl;
+			progress = std::shared_ptr<ProgressBar>(new ProgressBar(1));
 		} else {
 			std::cout << "File is "
 				<< (opmode == COMPRESS ? "uncompressed" : "compressed") << std::endl;
@@ -165,7 +168,7 @@ int main(int argc, char** argv) {
 
 	if (input.getOpMode() == COMPRESS) {
 		try {
-			encoder::encode(input, *output, bitSize, true);
+			encoder::encode(input, *output, bitSize, true, progress);
 		} catch (std::exception e) {
 			std::cerr << "Error encoding: " << e.what() << std::endl;
 			return EXIT_FAILURE;
@@ -180,7 +183,7 @@ int main(int argc, char** argv) {
 	}
 
 	if (benchmark) {
-		std::chrono::duration<unsigned long, std::nano> elapsed(std::chrono::system_clock::now() - timestamp);
+		auto elapsed(std::chrono::system_clock::now() - timestamp);
 		std::cout << "Time elapsed: " << (elapsed.count() / 1000000) << " ms" << std::endl;
 	}
 

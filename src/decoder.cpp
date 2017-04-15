@@ -1,6 +1,6 @@
 #include "decoder.hpp"
 
+void decoder::decode(Input& input, Output& output) {
+	return;
 
-const char* decoder::decode(Input& input, Output& output) {
-	return nullptr;
 }

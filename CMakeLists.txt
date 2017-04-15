@@ -11,6 +11,7 @@ if(WIN32)
 	add_definitions(-DNOMINMAX)
 endif()
 
+find_package(Threads REQUIRED)
 include_directories(include)
 
 set(SOURCES
@@ -18,17 +19,20 @@ set(SOURCES
 	src/input.cpp
 	src/output.cpp
 	src/encoder.cpp
-	src/decoder.cpp)
+	src/decoder.cpp
+	src/progressbar.cpp)
 
 set(HEADERS
 	include/input.hpp
 	include/output.hpp
 	include/encoder.hpp
 	include/decoder.hpp
+	include/progressbar.hpp
 	include/bitbuffer.hpp
 	include/stringtable.hpp)
 
 add_executable(${EXENAME} ${SOURCES} ${HEADERS})
+target_link_libraries(${EXENAME} ${CMAKE_THREAD_LIBS_INIT})
 
 if(MAKE_TESTS)
 	add_subdirectory(tests)

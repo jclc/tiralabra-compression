@@ -5,8 +5,12 @@
 #include <stdexcept>
 #include "bitbuffer.hpp"
 #include <cmath>
+#include <memory>
+#include "progressbar.hpp"
 
-void encoder::encode(Input& input, Output& output, unsigned int bitSize, bool header) {
+void encoder::encode(Input& input, Output& output,
+	unsigned int bitSize, bool header,
+	std::shared_ptr<ProgressBar> progress) {
 
 	if (header) {
 		/* Write start header
@@ -23,6 +27,8 @@ void encoder::encode(Input& input, Output& output, unsigned int bitSize, bool he
 	StringTable strTable(maxEntries);
 	uint8_t readBuffer[BUFFER_SIZE];
 	BitBuffer bb(bitSize, BUFFER_SIZE, true);
+	int progIntervalMax = 100;
+	int progInterval = progIntervalMax;
 
 	unsigned int maxBytes;
 	if (bitSize == 12)
@@ -43,6 +49,17 @@ void encoder::encode(Input& input, Output& output, unsigned int bitSize, bool he
 	uint8_t sym;
 
 	while ((bytesRead = input.read(readBuffer, BUFFER_SIZE)) != 0) {
+		if (progress) {
+			if (progInterval <= 0) {
+				float p =
+					(input.getCurrentPos() - input.getReadStart())
+						/ (input.getReadEnd() - input.getReadStart());
+				progress->progress(p, 0);
+				progInterval = progIntervalMax;
+			} else {
+				--progInterval;
+			}
+		}
 		for (int i = 0; i < bytesRead; ++i) {
 			sym = readBuffer[i];
 			temp = strTable.getNextEntry(str, sym);
