@@ -48,17 +48,13 @@ void encoder::encode(Input& input, Output& output,
 	// "Symbol" (sym) is the last read character in the file.
 	uint8_t sym;
 
+	if (progress)
+		progress->setMessage("Encoding: ");
 	while ((bytesRead = input.read(readBuffer, BUFFER_SIZE)) != 0) {
 		if (progress) {
-			if (progInterval <= 0) {
-				float p =
-					(input.getCurrentPos() - input.getReadStart())
-						/ (input.getReadEnd() - input.getReadStart());
-				progress->progress(p, 0);
-				progInterval = progIntervalMax;
-			} else {
-				--progInterval;
-			}
+			progress->progress(
+				100*((float)(input.getCurrentPos()-input.getReadStart())
+					/(input.getReadEnd()-input.getReadStart())), 0);
 		}
 		for (int i = 0; i < bytesRead; ++i) {
 			sym = readBuffer[i];

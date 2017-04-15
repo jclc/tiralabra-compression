@@ -35,7 +35,8 @@ int main(int argc, char** argv) {
 	int bitSize = 12;
 	std::shared_ptr<ProgressBar> progress = nullptr;
 
-	std::chrono::time_point<std::chrono::system_clock> timestamp;
+	std::chrono::time_point<std::chrono::system_clock> timestampStart;
+	std::chrono::time_point<std::chrono::system_clock> timestampEnd;
 
 	for (int i = 1; i < argc; ++i) {
 		if (argv[i][0] != '-') {
@@ -162,8 +163,12 @@ int main(int argc, char** argv) {
 		}
 	}
 
+
+	if (progress)
+		progress->start();
+
 	if (benchmark) {
-		timestamp = std::chrono::system_clock::now();
+		timestampStart = std::chrono::system_clock::now();
 	}
 
 	if (input.getOpMode() == COMPRESS) {
@@ -182,10 +187,16 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	if (benchmark) {
-		auto elapsed(std::chrono::system_clock::now() - timestamp);
-		std::cout << "Time elapsed: " << (elapsed.count() / 1000000) << " ms" << std::endl;
-	}
+	if (benchmark)
+		timestampEnd = std::chrono::system_clock::now();
+
+	if (progress)
+		progress->stop();
+
+	if (benchmark)
+		std::cout << "Time elapsed: "
+			<< std::chrono::duration_cast<std::chrono::milliseconds>
+			(timestampEnd - timestampStart).count() << " ms" << std::endl;
 
 	return EXIT_SUCCESS;
 }
