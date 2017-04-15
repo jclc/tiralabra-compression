@@ -27,8 +27,6 @@ void encoder::encode(Input& input, Output& output,
 	StringTable strTable(maxEntries);
 	uint8_t readBuffer[BUFFER_SIZE];
 	BitBuffer bb(bitSize, BUFFER_SIZE, true);
-	int progIntervalMax = 100;
-	int progInterval = progIntervalMax;
 
 	unsigned int maxBytes;
 	if (bitSize == 12)
