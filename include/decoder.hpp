@@ -1,12 +1,15 @@
 #ifndef DECODER_HPP
 #define DECODER_HPP
 
+#include <memory>
 #include "input.hpp"
 #include "output.hpp"
+#include "progressbar.hpp"
+#include "common.hpp"
 
 namespace decoder {
 
-void decode(Input& input, Output& output);
+void decode(Input& input, Output& output, std::shared_ptr<ProgressBar> progress);
 
 }
 

@@ -180,7 +180,8 @@ int main(int argc, char** argv) {
 		}
 	} else if (input.getOpMode() == DECOMPRESS) {
 		try {
-			decoder::decode(input, *output);
+			input.setBounds(8, input.getFileSize() - 24);
+			decoder::decode(input, *output, progress);
 		} catch (std::exception e) {
 			std::cerr << "Error decoding: " << e.what() << std::endl;
 			return EXIT_FAILURE;

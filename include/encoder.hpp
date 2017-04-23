@@ -5,13 +5,9 @@
 #include "input.hpp"
 #include "output.hpp"
 #include "progressbar.hpp"
+#include "common.hpp"
 #include <memory>
 
-const int BUFFER_SIZE = 4096;
-const int MIN_BIT_SIZE = 12;
-const int MAX_BIT_SIZE = 16;
-
-static char encoderErrorMsg[256] = "";
 
 namespace encoder {
 

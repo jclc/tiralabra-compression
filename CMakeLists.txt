@@ -29,7 +29,9 @@ set(HEADERS
 	include/decoder.hpp
 	include/progressbar.hpp
 	include/bitbuffer.hpp
-	include/stringtable.hpp)
+	include/stringtable.hpp
+	include/common.hpp)
+
 
 add_executable(${EXENAME} ${SOURCES} ${HEADERS})
 target_link_libraries(${EXENAME} ${CMAKE_THREAD_LIBS_INIT})

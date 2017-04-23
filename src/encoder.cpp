@@ -24,7 +24,7 @@ void encoder::encode(Input& input, Output& output,
 		throw std::runtime_error("Invalid bit size");
 
 	unsigned int maxEntries = std::pow(2, bitSize) - 1;
-	StringTable strTable(maxEntries);
+	StringTable strTable(maxEntries, true);
 	uint8_t readBuffer[BUFFER_SIZE];
 	BitBuffer bb(bitSize, BUFFER_SIZE, true);
 
@@ -39,6 +39,9 @@ void encoder::encode(Input& input, Output& output,
 	if (bytesRead == 0)
 		throw std::runtime_error("Could not read from input file or file is empty");
 
+	if (progress)
+		progress->setMessage("Encoding: ");
+
 	// "String" (str) is an index on the string table. We initialise it with
 	// the first symbol in the file
 	uint16_t str = (uint16_t) readBuffer[0];
@@ -46,8 +49,6 @@ void encoder::encode(Input& input, Output& output,
 	// "Symbol" (sym) is the last read character in the file.
 	uint8_t sym;
 
-	if (progress)
-		progress->setMessage("Encoding: ");
 	while ((bytesRead = input.read(readBuffer, BUFFER_SIZE)) != 0) {
 		if (progress) {
 			progress->progress(
@@ -56,14 +57,14 @@ void encoder::encode(Input& input, Output& output,
 		}
 		for (int i = 0; i < bytesRead; ++i) {
 			sym = readBuffer[i];
-			temp = strTable.getNextEntry(str, sym);
+			temp = strTable.getNextEncodingEntry(str, sym);
 			if (temp != 0) {
 				// String + Symbol is already in the string table
 				str = temp;
 			} else {
 				// String + Symbol is not yet in the string table
 				bb.insert(str);
-				strTable.insert(str, sym);
+				strTable.insertEncodingSymbol(str, sym);
 				str = (uint16_t) sym;
 			}
 

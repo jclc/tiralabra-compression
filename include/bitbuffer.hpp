@@ -21,16 +21,10 @@ public:
 	~BitBuffer();
 
 	/**
-	 * @brief Insert 12 first bits of a word in the bit buffer
+	 * @brief Insert n first bits of a word in the bit buffer
 	 * @param word
 	 */
 	void insert(uint16_t word);
-
-//	/**
-//	 * @brief Insert 16 first bits of a word in the bit buffer
-//	 * @param word
-//	 */
-//	void insert16(uint16_t word);
 
 	/**
 	 * @brief Remove N (bitSize-sized) words and shift the remaining words to the beginning
@@ -69,13 +63,19 @@ public:
 	 */
 	unsigned int getTotalBytes();
 
+	/**
+	 * @brief After writing to the buffer from outside the class, tell the class how
+	 * many bytes were written to the buffer
+	 */
+	void setBytesRead(unsigned int bytesRead);
+
 	int bitSize;
 	unsigned int wordsUsed;
 	unsigned int maxWords;
 	uint8_t* buffer;
 };
 
-BitBuffer::BitBuffer(int p_bitSize, unsigned int p_bufferSize, bool encode) {
+inline BitBuffer::BitBuffer(int p_bitSize, unsigned int p_bufferSize, bool encode) {
 	buffer = (uint8_t*) malloc(sizeof(uint8_t) * (p_bufferSize +
 		(p_bitSize == 12 ? p_bufferSize/2 : p_bufferSize) + 2));
 	for (int i = 0; i < (p_bufferSize / 8) + 2; ++i)
@@ -85,7 +85,7 @@ BitBuffer::BitBuffer(int p_bitSize, unsigned int p_bufferSize, bool encode) {
 	bitSize = p_bitSize;
 }
 
-BitBuffer::~BitBuffer() {
+inline BitBuffer::~BitBuffer() {
 	free(buffer);
 }
 
@@ -180,6 +180,15 @@ inline unsigned int BitBuffer::getTotalBytes() {
 		return wordsUsed * 2;
 	} else {
 		return wordsUsed * 3 / 2 + (wordsUsed % 2);
+	}
+}
+
+inline void BitBuffer::setBytesRead(unsigned int bytesRead) {
+	if (bitSize == 16) {
+		wordsUsed = bytesRead / 2;
+	} else {
+		// Is rounded down implicitly
+		wordsUsed = bytesRead * 2 / 3;
 	}
 }
 
