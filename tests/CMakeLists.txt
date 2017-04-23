@@ -13,7 +13,10 @@ set(TESTOUTPUT
 
 include_directories(${GTEST_INCLUDE_DIRS})
 
-# Unit tests
+
+### Unit tests
+
+# TestOutput
 
 add_executable(testoutputtest
 	testoutputtest.cpp
@@ -22,6 +25,9 @@ add_executable(testoutputtest
 target_link_libraries(testoutputtest ${GTEST_BOTH_LIBRARIES})
 add_test(NAME TestOutputTest COMMAND testoutputtest
 	WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test-resources")
+
+
+# Input
 
 add_executable(inputtest
 	inputtest.cpp
@@ -32,6 +38,9 @@ target_link_libraries(inputtest ${GTEST_BOTH_LIBRARIES})
 add_test(NAME InputTest COMMAND inputtest
 	WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test-resources")
 
+
+# Output
+
 add_executable(outputtest
 	outputtest.cpp
 	../src/output.cpp)
@@ -40,6 +49,9 @@ target_link_libraries(outputtest ${GTEST_BOTH_LIBRARIES})
 add_test(NAME OutputTest COMMAND outputtest
 	WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test-resources")
 
+
+# BitBuffer
+
 add_executable(bitbuffertest
 	bitbuffertest.cpp
 	../include/bitbuffer.hpp)
@@ -47,6 +59,19 @@ add_executable(bitbuffertest
 target_link_libraries(bitbuffertest ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 add_test(NAME BitBufferTest COMMAND bitbuffertest
 	WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test-resources")
+
+
+# StringTable
+
+add_executable(stringtabletest
+	stringtabletest.cpp)
+
+target_link_libraries(stringtabletest ${GTEST_BOTH_LIBRARIES})
+add_test(NAME StringTableTest COMMAND stringtabletest
+	WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test-resources")
+
+
+# Encoder
 
 add_executable(encodertest
 	encodertest.cpp

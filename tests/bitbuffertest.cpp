@@ -140,14 +140,15 @@ TEST(BitBufferTest, GetFullArrayWorksWith12BitWords) {
 
 	ASSERT_EQ(6, bb1.wordsUsed);
 	uint16_t retArray[5];
-	bb1.shift(2);
+	bb1.shift(1);
 	unsigned int returnedElems = bb1.getFullArray(retArray);
-	ASSERT_EQ(4, returnedElems) << "getFullArray doesn't return correct amount of elements";
+	ASSERT_EQ(5, returnedElems) << "getFullArray doesn't return correct amount of elements";
 
-	EXPECT_EQ(0x0987, retArray[0]);
-	EXPECT_EQ(0x0F23, retArray[1]);
-	EXPECT_EQ(0x0CD1, retArray[2]);
-	EXPECT_EQ(0x0DBA, retArray[3]);
+	EXPECT_EQ(0x0654, retArray[0]);
+	EXPECT_EQ(0x0987, retArray[1]);
+	EXPECT_EQ(0x0F23, retArray[2]);
+	EXPECT_EQ(0x0CD1, retArray[3]);
+	EXPECT_EQ(0x0DBA, retArray[4]);
 }
 
 TEST(BitBufferTest, GetFullArrayWorksWith16BitWords) {

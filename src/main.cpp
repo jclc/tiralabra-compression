@@ -136,7 +136,8 @@ int main(int argc, char** argv) {
 				<< std::round(compressRatio * 1000) / 1000 << std::endl;
 		}
 		if (!printInfo) {
-			std::cout << "Encoding with bit size: " << bitSize << std::endl;
+			if (opmode == COMPRESS)
+				std::cout << "Encoding with bit size: " << bitSize << std::endl;
 			if (nullOutput)
 				std::cout << "Discarding output" << std::endl;
 			else if (outFileName != "")

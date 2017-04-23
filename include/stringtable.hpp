@@ -1,9 +1,9 @@
 #ifndef STRINGTABLE_HPP
 #define STRINGTABLE_HPP
 
+#include <cstdlib>
 #include <cstdint>
 #include <cstring>
-//#include <sstream>
 
 struct symbol_ll;
 
@@ -23,7 +23,7 @@ public:
 	/// Insert a symbol in the table after string entry
 	void insertEncodingSymbol(uint16_t str, uint8_t sym);
 
-	void insertDecodingSymbol(uint16_t code, uint8_t sym);
+	void insertDecodingSymbol(uint16_t str, uint8_t sym);
 
 	/// Returns true if the entry is in the table
 	bool hasEntry(uint16_t entry);
@@ -32,7 +32,10 @@ public:
 	uint16_t getNextEncodingEntry(uint16_t str, uint8_t sym);
 
 	/// Get the next entry in the table
-	char* getDecodingString(uint16_t code);
+	char* getDecodingString(uint16_t code, unsigned int* length);
+
+	/// Get the symbol at the code index
+	char getSymbol(uint16_t code);
 
 	/// Whether the table has reached its limit
 	bool isFull();
@@ -110,6 +113,11 @@ inline void StringTable::insertEncodingSymbol(uint16_t str, uint8_t sym) {
 	newLink(str, lastSymbol);
 }
 
+inline void StringTable::insertDecodingSymbol(uint16_t str, uint8_t sym) {
+	tbl_symbol[++lastSymbol] = sym;
+	newLink(lastSymbol, str);
+}
+
 inline uint16_t StringTable::getNextEncodingEntry(uint16_t str, uint8_t sym) {
 	symbol_ll* link = tbl_symbol_ll[str];
 	if (link == nullptr)
@@ -124,10 +132,9 @@ inline uint16_t StringTable::getNextEncodingEntry(uint16_t str, uint8_t sym) {
 	return 0;
 }
 
-inline char* StringTable::getDecodingString(uint16_t code) {
+inline char* StringTable::getDecodingString(uint16_t code, unsigned int* length) {
 	uint16_t sym = code;
 	int i = stringBufferSize - 1; // Fill the string starting from the end
-	returnString[i--] = '\0';
 	while (true) {
 		if (i < 0) {
 			char* temp = (char*) malloc(sizeof(char*) * stringBufferSize * 2);
@@ -138,7 +145,7 @@ inline char* StringTable::getDecodingString(uint16_t code) {
 			stringBufferSize *= 2;
 		}
 
-		returnString[stringBufferSize + i] = tbl_symbol[sym];
+		returnString[i] = tbl_symbol[sym];
 
 		if (tbl_symbol_ll[sym] == nullptr)
 			break;
@@ -147,8 +154,13 @@ inline char* StringTable::getDecodingString(uint16_t code) {
 
 		--i;
 	}
+	(*length) = stringBufferSize - i;
 
 	return returnString + i;
+}
+
+inline char StringTable::getSymbol(uint16_t code) {
+	return tbl_symbol[code];
 }
 
 inline bool StringTable::hasEntry(uint16_t entry) {
