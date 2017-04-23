@@ -63,5 +63,4 @@ TEST(StringTableTest, DecodingSymbols) {
 	EXPECT_EQ('a', str[0]) << "Doesn't return correct string after 2 inserts";
 	EXPECT_EQ('b', str[1]) << "Doesn't return correct string after 2 inserts";
 	EXPECT_EQ('c', str[2]) << "Doesn't return correct string after 2 inserts";
-
 }
