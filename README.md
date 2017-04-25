@@ -2,12 +2,11 @@
 
 This repository holds a data structures-related university project. Course-related documentation is in Finnish, but documentation pertaining to its usage will also be in English.
 
-This program aims to implement the Lempel-Ziv-Welch compression algorithm and to provide an encoder as well as a decoder.
+This program implements the Lempel-Ziv-Welch compression algorithm and provides an encoder as well as a decoder.
 
 ## Requirements
 
 * GCC 4.4/Clang 3.3 or newer
-* Little-endian CPU architecture (for now)
 * CMake 3.1 or newer
 * Google Test for tests (optional)
 
