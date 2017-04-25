@@ -64,3 +64,15 @@ TEST(StringTableTest, DecodingSymbols) {
 	EXPECT_EQ('b', str[1]) << "Doesn't return correct string after 2 inserts";
 	EXPECT_EQ('c', str[2]) << "Doesn't return correct string after 2 inserts";
 }
+
+TEST(StringTableTest, CheckingForSymbols) {
+	int bitSize = 12;
+	int maxEntries = std::pow(2, bitSize) - 1;
+	StringTable strTbl(maxEntries, true);
+
+	EXPECT_FALSE(strTbl.hasEntry(256)) << "Empty table reports having an entry";
+	EXPECT_FALSE(strTbl.hasEntry(257)) << "Empty table reports having an entry";
+	strTbl.insertEncodingSymbol('m', 'n');
+	EXPECT_TRUE(strTbl.hasEntry(256)) << "Doesn't report having an entry after insertion";
+	EXPECT_FALSE(strTbl.hasEntry(257)) << "Reports having more than one entry after insertion";
+}

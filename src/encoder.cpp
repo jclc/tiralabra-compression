@@ -23,7 +23,7 @@ void encoder::encode(Input& input, Output& output,
 	if (bitSize != MIN_BIT_SIZE && bitSize != MAX_BIT_SIZE)
 		throw std::runtime_error("Invalid bit size");
 
-	unsigned int maxEntries = std::pow(2, bitSize) - 1;
+	unsigned int maxEntries = std::pow(2, bitSize) - 2;
 	StringTable strTable(maxEntries, true);
 	uint8_t readBuffer[BUFFER_SIZE];
 	BitBuffer bb(bitSize, BUFFER_SIZE, true);

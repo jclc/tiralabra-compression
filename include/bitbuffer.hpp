@@ -128,7 +128,7 @@ inline void BitBuffer::shift(unsigned int wordsToShift) {
 		} else {
 			// Even number of words means we can simply copy the necessary bytes
 			// without the need for bit shifting
-			for (int i = 0; i < (wordsUsed - wordsToShift)*3/2; ++i) {
+			for (int i = 0; i <= (wordsUsed - wordsToShift)*3/2; ++i) {
 				buffer[i] = buffer[byteOffset+i];
 			}
 		}

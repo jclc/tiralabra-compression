@@ -23,7 +23,7 @@ public:
 	/// Insert a symbol in the table after string entry
 	void insertEncodingSymbol(uint16_t str, uint8_t sym);
 
-	void insertDecodingSymbol(uint16_t str, uint8_t sym);
+	uint16_t insertDecodingSymbol(uint16_t str, uint8_t sym);
 
 	/// Returns true if the entry is in the table
 	bool hasEntry(uint16_t entry);
@@ -53,7 +53,7 @@ private:
 	symbol_ll** tbl_symbol_ll;
 
 	/// Create a new link pointing from entry str to entry sym
-	void newLink(uint16_t str, uint16_t target);
+	void newLink(uint16_t source, uint16_t target);
 
 	/// Whether or not to be used for encoding
 	bool encode;
@@ -113,9 +113,10 @@ inline void StringTable::insertEncodingSymbol(uint16_t str, uint8_t sym) {
 	newLink(str, lastSymbol);
 }
 
-inline void StringTable::insertDecodingSymbol(uint16_t str, uint8_t sym) {
+inline uint16_t StringTable::insertDecodingSymbol(uint16_t str, uint8_t sym) {
 	tbl_symbol[++lastSymbol] = sym;
 	newLink(lastSymbol, str);
+	return lastSymbol;
 }
 
 inline uint16_t StringTable::getNextEncodingEntry(uint16_t str, uint8_t sym) {
@@ -164,27 +165,25 @@ inline char StringTable::getSymbol(uint16_t code) {
 }
 
 inline bool StringTable::hasEntry(uint16_t entry) {
-	return (entry > lastSymbol);
+	return (entry <= lastSymbol);
 }
 
 inline bool StringTable::isFull() {
 	return lastSymbol >= maxSymbols;
 }
 
-inline void StringTable::newLink(uint16_t str, uint16_t target) {
+inline void StringTable::newLink(uint16_t source, uint16_t target) {
 	symbol_ll* newLink = new symbol_ll();
 	newLink->targetSymbol = target;
 
-	symbol_ll* lastInChain = tbl_symbol_ll[str];
+	symbol_ll* lastInChain = tbl_symbol_ll[source];
 	if (lastInChain == nullptr) {
-		tbl_symbol_ll[str] = newLink;
+		tbl_symbol_ll[source] = newLink;
 		return;
 	}
 
-	if (lastInChain != nullptr) {
-		while (lastInChain->nextLink != nullptr)
-			lastInChain = lastInChain->nextLink;
-	}
+	while (lastInChain->nextLink != nullptr)
+		lastInChain = lastInChain->nextLink;
 
 	lastInChain->nextLink = newLink;
 }

@@ -73,20 +73,24 @@ TEST(BitBufferTest, Shifts12BitWordsCorrectlyWithEvenValues) {
 
 TEST(BitBufferTest, Shifts12BitWordsCorrectlyWithUnevenValues) {
 	BitBuffer bb1(12, 4, true);
-	uint16_t trash = 0xEEEE;
 	uint16_t word1 = 0xF321;
 	uint16_t word2 = 0xF654;
 	uint16_t word3 = 0xF987;
 	uint16_t word4 = 0xFCBA;
+	uint16_t word5 = 0xF10D;
+	uint16_t word6 = 0xF432;
 
 	// Fill the buffer with garbage first to test
 	bb1.insert(word1);
 	bb1.insert(word2);
 	bb1.insert(word3);
 	bb1.insert(word4);
+	bb1.insert(word5);
+	bb1.insert(word6);
 
 	bb1.shift(1);
-	ASSERT_EQ(3, bb1.wordsUsed) << "Doesn't store correct amount of bits after shifting";
+	ASSERT_EQ(5, bb1.wordsUsed)
+		<< "Doesn't store correct amount of bits after shifting odd number";
 
 	uint8_t ret[5];
 	memcpy(ret, bb1.buffer, sizeof(uint8_t) * 5);
@@ -94,7 +98,19 @@ TEST(BitBufferTest, Shifts12BitWordsCorrectlyWithUnevenValues) {
 	EXPECT_EQ(0x76, bb1.buffer[1]) << "The second returned byte is incorrect";
 	EXPECT_EQ(0x98, bb1.buffer[2]) << "The third returned byte is incorrect";
 	EXPECT_EQ(0xBA, bb1.buffer[3]) << "The fourth returned byte is incorrect";
-	EXPECT_EQ(0x0C, bb1.buffer[4]) << "The last returned byte is incorrect";
+	EXPECT_EQ(0xDC, bb1.buffer[4]) << "The fifth returned byte is incorrect";
+	EXPECT_EQ(0x10, bb1.buffer[5]) << "The sixth returned byte is incorrect";
+	EXPECT_EQ(0x32, bb1.buffer[6]) << "The seventh returned byte is incorrect";
+	EXPECT_EQ(0x04, bb1.buffer[7]) << "The last returned byte is incorrect";
+
+	bb1.shift(2);
+	ASSERT_EQ(3, bb1.wordsUsed)
+		<< "Doesn't store correct amount of bits after shifting even number";
+	EXPECT_EQ(0xBA, bb1.buffer[0]) << "The first returned byte is incorrect";
+	EXPECT_EQ(0xDC, bb1.buffer[1]) << "The second returned byte is incorrect";
+	EXPECT_EQ(0x10, bb1.buffer[2]) << "The third returned byte is incorrect";
+	EXPECT_EQ(0x32, bb1.buffer[3]) << "The fourth returned byte is incorrect";
+	EXPECT_EQ(0x04, bb1.buffer[4]) << "The last returned byte is incorrect";
 }
 
 TEST(BitBufferTest, Shifts16BitWordsCorrectly) {
@@ -149,6 +165,14 @@ TEST(BitBufferTest, GetFullArrayWorksWith12BitWords) {
 	EXPECT_EQ(0x0F23, retArray[2]);
 	EXPECT_EQ(0x0CD1, retArray[3]);
 	EXPECT_EQ(0x0DBA, retArray[4]);
+
+	bb1.shift(2);
+	returnedElems = bb1.getFullArray(retArray);
+	ASSERT_EQ(3, returnedElems) << "getFullArray doesn't return correct amount of elements";
+
+	EXPECT_EQ(0x0F23, retArray[0]);
+	EXPECT_EQ(0x0CD1, retArray[1]);
+	EXPECT_EQ(0x0DBA, retArray[2]);
 }
 
 TEST(BitBufferTest, GetFullArrayWorksWith16BitWords) {
