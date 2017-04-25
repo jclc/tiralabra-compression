@@ -82,7 +82,6 @@ void decoder::decode(Input& input, Output& output,
 					str = strTable.insertDecodingSymbol(str, strPtr[0]);
 					strPtr = strTable.getDecodingString(str, &len);
 					output.write(strPtr, len);
-//					output.write(strPtr, 1);
 				} else {
 					// When the code is in the table
 					entry = code;
