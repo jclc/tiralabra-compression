@@ -61,6 +61,7 @@ void decoder::decode(Input& input, Output& output,
 				// Clear table if we reach the signal
 				firstRun = true;
 				strTable.clearTable();
+				continue;
 			}\
 			if (firstRun) {
 				// This is needed inside the loop since we cannot read just one code
@@ -69,6 +70,8 @@ void decoder::decode(Input& input, Output& output,
 
 				strPtr = strTable.getDecodingString(code, &len);
 				output.write(strPtr, 1);
+				str = code;
+				firstRun = false;
 			} else {
 
 				code = readBuffer[i];
@@ -76,9 +79,10 @@ void decoder::decode(Input& input, Output& output,
 					// Deal with the special circumstance where the read code is not
 					// in the string table
 					strPtr = strTable.getDecodingString(str, &len);
+					str = strTable.insertDecodingSymbol(str, strPtr[0]);
+					strPtr = strTable.getDecodingString(str, &len);
 					output.write(strPtr, len);
-					output.write(strPtr, 1);
-					strTable.insertDecodingSymbol(str, strPtr[0]);
+//					output.write(strPtr, 1);
 				} else {
 					// When the code is in the table
 					entry = code;
@@ -90,7 +94,6 @@ void decoder::decode(Input& input, Output& output,
 			}
 		}
 		bb.shift(wordsUsed);
-		firstRun = false;
 	}
 
 	return;
