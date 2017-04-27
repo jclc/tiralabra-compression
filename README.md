@@ -8,7 +8,7 @@ This program implements the Lempel-Ziv-Welch compression algorithm and provides 
 
 * GCC 4.4/Clang 3.3 or newer
 * CMake 3.1 or newer
-* Google Test for tests (optional)
+* Google Test for tests (optional, untick MAKE_TESTS option in CMake to disable)
 
 ## Building
 
