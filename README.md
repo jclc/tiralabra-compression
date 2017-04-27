@@ -12,15 +12,19 @@ This program implements the Lempel-Ziv-Welch compression algorithm and provides 
 
 ## Building
 
-Use `cmake` or `cmake-gui` to generate makefiles. Run `make` to build.
+Use `cmake` or `cmake-gui` to generate makefiles. Run `make` or your build system of choice to build.
 
 ### Example
 
+#### On \*nix
 ```
+git clone https://github.com/jclc/tiralabra-compression.git
+cd tiralabra-compression
 mkdir build; cd build
 cmake ..
 make
 ```
+This will compile the program in tiralabra-compression/build/
 
 ## Usage
 
@@ -33,7 +37,7 @@ If output file is not given, output will be printed to stdout.
 ### Options
 
 | Switch | Parameter | Description |
-| ------ | --------- | ----------- |
+|:------:|:---------:| ----------- |
 | `-h`   |           | Print help message |
 | `-v`   |           | Verbose output - Print file information and progress (don't use when writing to stdout) |
 | `-b`   |           | Benchmark mode - Print execution time in milliseconds |
@@ -52,3 +56,4 @@ Note that the tests require the test-resources directory located in the source d
 ## Projektin dokumentaatio
 
 Projektin dokumentaatio sijaitsee project-docs/-hakemistossa.
+ 
