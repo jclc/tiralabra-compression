@@ -36,7 +36,6 @@ void decoder::decode(Input& input, Output& output,
 
 	uint16_t code;
 	uint16_t str;
-	uint16_t entry;
 	char* strPtr;
 	unsigned int len;
 	bool specialOccurred = false; // mark as true after the special case has occurred
@@ -84,11 +83,10 @@ void decoder::decode(Input& input, Output& output,
 					output.write(strPtr, len);
 				} else {
 					// When the code is in the table
-					entry = code;
-					strPtr = strTable.getDecodingString(entry, &len);
+					strPtr = strTable.getDecodingString(code, &len);
 					output.write(strPtr, len);
 					strTable.insertDecodingSymbol(str, strPtr[0]);
-					str = entry;
+					str = code;
 				}
 			}
 		}
