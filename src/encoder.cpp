@@ -8,11 +8,11 @@
 #include <memory>
 #include "progressbar.hpp"
 
-void encoder::encode(Input& input, Output& output,
-	unsigned int bitSize, bool header,
+void Encoder::encode(Input& input, Output& output,
+	unsigned int bitSize, bool startHeader, bool endHeader,
 	std::shared_ptr<ProgressBar> progress) {
 
-	if (header) {
+	if (startHeader) {
 		/* Write start header
 		 * <Bytes>   <Content>
 		 * 0-7       Magic numbers (defined in input.hpp)
@@ -89,13 +89,14 @@ void encoder::encode(Input& input, Output& output,
 	bb.insert(str);
 	output.write((char*) bb.buffer, bb.getTotalBytes());
 
-	if (header) {
+	if (endHeader) {
 		/*
 		 * Write end header
 		 * <Bytes>   <Content>
 		 * 0-7       Original size (unsigned long)
 		 * 8         Bit size of code words
-		 * 9-23      Reserved
+		 * 9         Number of sections
+		 * 10-23     Reserved
 		 */
 		char tempArray[8];
 

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.2.3)
+cmake_minimum_required(VERSION 3.1)
 project("tiralabra-compression")
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
@@ -27,7 +27,9 @@ set(SOURCES
 	src/output.cpp
 	src/encoder.cpp
 	src/decoder.cpp
-	src/progressbar.cpp)
+	src/progressbar.cpp
+	src/fileconcatenator.cpp
+	)
 
 set(HEADERS
 	include/input.hpp
@@ -37,7 +39,9 @@ set(HEADERS
 	include/progressbar.hpp
 	include/bitbuffer.hpp
 	include/stringtable.hpp
-	include/common.hpp)
+	include/common.hpp
+	include/fileconcatenator.hpp
+	)
 
 
 add_executable(${EXENAME} ${SOURCES} ${HEADERS})

@@ -6,7 +6,7 @@
 #include <cstring>
 #include <cstdlib>
 
-void decoder::decode(Input& input, Output& output,
+void Decoder::decode(Input& input, Output& output,
 	std::shared_ptr<ProgressBar> progress) {
 
 	unsigned int bitSize = input.getBitSize();

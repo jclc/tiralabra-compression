@@ -16,12 +16,13 @@ void printHelp() {
 		<< "Usage: tiracomp [options] <input file> [output file]\n" << std::endl
 		<< "If output file is not specified, output will be printed to stdout" << std::endl
 		<< "Options:" << std::endl
-		<< "    -h:             Print this help message" << std::endl
-		<< "    -v:             Verbose output" << std::endl
-		<< "    -b:             Benchmark mode" << std::endl
-		<< "    -w <word size>: Define word size in bits when encoding (12 or 16)" << std::endl
-		<< "    -i:             Only print file info" << std::endl
-		<< "    -n:             Null output (disregard output, useful for benchmark)" << std::endl;
+		<< " -h:             Print this help message" << std::endl
+		<< " -v:             Verbose output" << std::endl
+		<< " -b:             Benchmark mode" << std::endl
+		<< " -w <word size>: Define word size in bits when encoding (12 or 16)" << std::endl
+		<< " -i:             Only print file info" << std::endl
+		<< " -n:             Null output (disregard output, useful for benchmark)" << std::endl
+		<< " -j <jobs>:      Number of concurrent jobs when encoding" << std::endl;
 }
 
 int main(int argc, char** argv) {
@@ -33,6 +34,7 @@ int main(int argc, char** argv) {
 	bool nullOutput = false; // If true, throw away the output
 	bool printInfo = false; // If true, print info and exit without operating
 	int bitSize = 12;
+	int jobs = 1;
 	std::shared_ptr<ProgressBar> progress = nullptr;
 
 	std::chrono::time_point<std::chrono::system_clock> timestampStart;
@@ -54,8 +56,10 @@ int main(int argc, char** argv) {
 			int j = 1;
 			int paramsToSkip = 0; // If an option takes a parameter, add to this
 			int value_w; // Value for option -w
+			int value_j; // Value for option -j
 			while ((argv[i][j] != '\0')) {
 				switch (argv[i][j]) {
+				case '?': // fallthrough
 				case 'h':
 					printHelp();
 					return EXIT_SUCCESS;
@@ -86,6 +90,21 @@ int main(int argc, char** argv) {
 					}
 					bitSize = value_w;
 					break;
+				case 'j':
+					++paramsToSkip;
+					if (i+paramsToSkip >= argc) {
+						std::cerr << "No value given for option -j" << std::endl;
+						return EXIT_FAILURE;
+					}
+					value_j = std::atoi(argv[i + paramsToSkip]);
+					if (value_j < MIN_JOBS || value_j > MAX_JOBS) {
+						std::cerr << "Invalid value " << value_j
+							<< " for option -j (must be between "
+							<< MIN_JOBS << " and " << MAX_JOBS << ")" << std::endl;
+						return EXIT_FAILURE;
+					}
+					jobs = value_j;
+					break;
 				default:
 					std::cerr << "Unknown option -" << argv[i][j] << std::endl;
 					return EXIT_FAILURE;
@@ -97,7 +116,7 @@ int main(int argc, char** argv) {
 	}
 
 	if (inFileName == "") {
-		std::cerr << "No input file given" << std::endl;
+		std::cerr << "No input file given (use -h for help)" << std::endl;
 		return EXIT_FAILURE;
 	}
 
@@ -120,7 +139,7 @@ int main(int argc, char** argv) {
 		if (!printInfo) {
 			std::cout << (opmode == COMPRESS ? "Compressing" : "Decompressing")
 				<< " file " << inFileName << std::endl;
-			progress = std::shared_ptr<ProgressBar>(new ProgressBar(1));
+			progress = std::shared_ptr<ProgressBar>(new ProgressBar(jobs));
 		} else {
 			std::cout << "File is "
 				<< (opmode == COMPRESS ? "uncompressed" : "compressed") << std::endl;
@@ -168,21 +187,22 @@ int main(int argc, char** argv) {
 	if (progress)
 		progress->start();
 
-	if (benchmark) {
+	if (benchmark)
 		timestampStart = std::chrono::system_clock::now();
-	}
 
 	if (input.getOpMode() == COMPRESS) {
+		Encoder encoder;
 		try {
-			encoder::encode(input, *output, bitSize, true, progress);
+			encoder.encode(input, *output, bitSize, true, true, progress);
 		} catch (std::exception e) {
 			std::cerr << "Error encoding: " << e.what() << std::endl;
 			return EXIT_FAILURE;
 		}
 	} else if (input.getOpMode() == DECOMPRESS) {
+		Decoder decoder;
 		try {
 			input.setBounds(8, input.getFileSize() - 24);
-			decoder::decode(input, *output, progress);
+			decoder.decode(input, *output, progress);
 		} catch (std::exception e) {
 			std::cerr << "Error decoding: " << e.what() << std::endl;
 			return EXIT_FAILURE;

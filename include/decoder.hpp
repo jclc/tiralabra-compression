@@ -7,10 +7,14 @@
 #include "progressbar.hpp"
 #include "common.hpp"
 
-namespace decoder {
+class Decoder {
+public:
+	Decoder() {}
 
-void decode(Input& input, Output& output, std::shared_ptr<ProgressBar> progress);
+	void decode(Input& input, Output& output, std::shared_ptr<ProgressBar> progress);
+};
 
-}
+
+
 
 #endif /* DECODER_HPP */
