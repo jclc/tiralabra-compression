@@ -86,6 +86,23 @@ target_link_libraries(encodertest ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_IN
 add_test(NAME EncoderTest COMMAND encodertest
 	WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test-resources")
 
+
+# Integration test
+
+add_executable(integrationtest
+	integrationtest.cpp
+	../src/input.cpp
+	../src/output.cpp
+	../src/encoder.cpp
+	../src/decoder.cpp
+	../src/progressbar.cpp
+	../src/tempfilenames.cpp
+	${TESTOUTPUT})
+
+target_link_libraries(integrationtest ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+add_test(NAME IntegrationTest COMMAND integrationtest
+	WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test-resources")
+
 #if (COVERAGE)
 #	include(CodeCoverage)
 #	setup_target_for_coverage(coverage inputtest outputtest coverage)

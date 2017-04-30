@@ -10,19 +10,19 @@
 #include "encoder.hpp"
 #include "decoder.hpp"
 #include "progressbar.hpp"
+#include "tempfilenames.hpp"
 
 void printHelp() {
 	std::cout << "tiralabra-compression" << std::endl
-		<< "Usage: tiracomp [options] <input file> [output file]\n" << std::endl
-		<< "If output file is not specified, output will be printed to stdout" << std::endl
-		<< "Options:" << std::endl
-		<< " -h:             Print this help message" << std::endl
-		<< " -v:             Verbose output" << std::endl
-		<< " -b:             Benchmark mode" << std::endl
-		<< " -w <word size>: Define word size in bits when encoding (12 or 16)" << std::endl
-		<< " -i:             Only print file info" << std::endl
-		<< " -n:             Null output (disregard output, useful for benchmark)" << std::endl
-		<< " -j <jobs>:      Number of concurrent jobs when encoding" << std::endl;
+	<< "Usage: tiracomp [options] <input file> [output file]\n" << std::endl
+	<< "If output file is not specified, output will be printed to stdout" << std::endl
+	<< "Options:" << std::endl
+	<< " -h:             Print this help message" << std::endl
+	<< " -v:             Verbose output" << std::endl
+	<< " -b:             Benchmark mode" << std::endl
+	<< " -w <word size>: Define word size in bits when encoding (12 or 16)" << std::endl
+	<< " -i:             Only print file info" << std::endl
+	<< " -n:             Null output (disregard output, useful for benchmark)" << std::endl;
 }
 
 int main(int argc, char** argv) {
@@ -90,21 +90,25 @@ int main(int argc, char** argv) {
 					}
 					bitSize = value_w;
 					break;
-				case 'j':
-					++paramsToSkip;
-					if (i+paramsToSkip >= argc) {
-						std::cerr << "No value given for option -j" << std::endl;
-						return EXIT_FAILURE;
-					}
-					value_j = std::atoi(argv[i + paramsToSkip]);
-					if (value_j < MIN_JOBS || value_j > MAX_JOBS) {
-						std::cerr << "Invalid value " << value_j
-							<< " for option -j (must be between "
-							<< MIN_JOBS << " and " << MAX_JOBS << ")" << std::endl;
-						return EXIT_FAILURE;
-					}
-					jobs = value_j;
-					break;
+//				case 'j':
+//					++paramsToSkip;
+//					if (i+paramsToSkip >= argc) {
+//						std::cerr << "No value given for option -j" << std::endl;
+//						return EXIT_FAILURE;
+//					}
+//					value_j = std::atoi(argv[i + paramsToSkip]);
+//					if (value_j < MIN_JOBS || value_j > MAX_JOBS) {
+//						std::cerr << "Invalid value " << value_j
+//							<< " for option -j (must be between "
+//							<< MIN_JOBS << " and " << MAX_JOBS << ")" << std::endl;
+//						return EXIT_FAILURE;
+//					}
+//					jobs = value_j;
+//					for (int i = 0; i < jobs; ++i) {
+//						std::cout << getTempFileName() << std::endl;
+//					}
+//					return 0;
+//					break;
 				default:
 					std::cerr << "Unknown option -" << argv[i][j] << std::endl;
 					return EXIT_FAILURE;
@@ -193,7 +197,7 @@ int main(int argc, char** argv) {
 	if (input.getOpMode() == COMPRESS) {
 		Encoder encoder;
 		try {
-			encoder.encode(input, *output, bitSize, true, true, progress);
+			encoder.encode(input, *output, bitSize, progress);
 		} catch (std::exception e) {
 			std::cerr << "Error encoding: " << e.what() << std::endl;
 			return EXIT_FAILURE;

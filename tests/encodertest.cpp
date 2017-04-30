@@ -11,7 +11,7 @@ TEST(EncoderTest, BasicFileWithHeader) {
 	std::shared_ptr<Output> out = std::shared_ptr<Output>(new TestOutput());
 	Encoder encoder;
 	try {
-		encoder.encode(in, *out, 16, true, true, nullptr);
+		encoder.encode(in, *out, 16, nullptr);
 	} catch (std::exception e) {
 		ASSERT_FALSE(1) << e.what();
 	}

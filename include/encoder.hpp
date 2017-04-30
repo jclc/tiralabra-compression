@@ -7,6 +7,7 @@
 #include "progressbar.hpp"
 #include "common.hpp"
 #include <memory>
+#include <vector>
 
 class Encoder {
 public:
@@ -20,8 +21,14 @@ public:
  * @return nullptr if successful, otherwise pointer to an error string
  */
 	void encode(Input& input, Output& output,
-		unsigned int p_bitSize, bool startHeader, bool endHeader,
+		unsigned int p_bitSize,
 		std::shared_ptr<ProgressBar> progress);
+
+	void insertMagicNumbers(Output& output);
+	void insertHeader(Output& output);
+
+private:
+	std::vector<std::string*> tempFileNames;
 };
 
 #endif /* ENCODER_HPP */

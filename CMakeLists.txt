@@ -28,6 +28,7 @@ set(SOURCES
 	src/encoder.cpp
 	src/decoder.cpp
 	src/progressbar.cpp
+	src/tempfilenames.cpp
 	)
 
 set(HEADERS
@@ -39,6 +40,7 @@ set(HEADERS
 	include/bitbuffer.hpp
 	include/stringtable.hpp
 	include/common.hpp
+	include/tempfilenames.hpp
 	)
 
 

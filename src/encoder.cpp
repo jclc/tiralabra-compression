@@ -7,18 +7,19 @@
 #include <cmath>
 #include <memory>
 #include "progressbar.hpp"
+#include <vector>
+#include "tempfilenames.hpp"
+#include <memory>
 
 void Encoder::encode(Input& input, Output& output,
-	unsigned int bitSize, bool startHeader, bool endHeader,
+	unsigned int bitSize,
 	std::shared_ptr<ProgressBar> progress) {
 
-	if (startHeader) {
-		/* Write start header
-		 * <Bytes>   <Content>
-		 * 0-7       Magic numbers (defined in input.hpp)
-		 */
-		output.write(magicNumbers, 8);
-	}
+	/* Write start header
+	 * <Bytes>   <Content>
+	 * 0-7       Magic numbers (defined in input.hpp)
+	 */
+	output.write(magicNumbers, 8);
 
 	if (bitSize != MIN_BIT_SIZE && bitSize != MAX_BIT_SIZE)
 		throw std::runtime_error("Invalid bit size");
@@ -89,27 +90,25 @@ void Encoder::encode(Input& input, Output& output,
 	bb.insert(str);
 	output.write((char*) bb.buffer, bb.getTotalBytes());
 
-	if (endHeader) {
-		/*
-		 * Write end header
-		 * <Bytes>   <Content>
-		 * 0-7       Original size (unsigned long)
-		 * 8         Bit size of code words
-		 * 9         Number of sections
-		 * 10-23     Reserved
-		 */
-		char tempArray[8];
+	/*
+	 * Write end header
+	 * <Bytes>   <Content>
+	 * 0-7       Original size (unsigned long)
+	 * 8         Bit size of code words
+	 * 9         Number of sections
+	 * 10-23     Reserved
+	 */
+	char tempArray[8];
 
-		// FIX: This restricts endianness-compatibility.
-		uint64_t originalSize = input.getOriginalSize();
-		memcpy(tempArray, &originalSize, 8);
-		output.write(tempArray, 8);
+	// FIX: This restricts endianness-compatibility.
+	uint64_t originalSize = input.getOriginalSize();
+	memcpy(tempArray, &originalSize, 8);
+	output.write(tempArray, 8);
 
-		memcpy(tempArray, &bitSize, 1);
-		output.write(tempArray, 1);
+	memcpy(tempArray, &bitSize, 1);
+	output.write(tempArray, 1);
 
-		const char nullArray[15] = "";
-		output.write(nullArray, 15);
-	}
+	const char nullArray[15] = "";
+	output.write(nullArray, 15);
 	return;
 }
