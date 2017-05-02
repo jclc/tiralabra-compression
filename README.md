@@ -1,8 +1,8 @@
 # tiralabra-compression
 
-This repository holds a data structures-related university project. Course-related documentation is in Finnish, but documentation pertaining to its usage will also be in English.
-
 This program implements the Lempel-Ziv-Welch compression algorithm and provides an encoder as well as a decoder.
+
+Created as a Univ. of Helsinki TiraLabra 2017 course project.
 
 ## Requirements
 
