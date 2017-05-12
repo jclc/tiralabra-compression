@@ -204,13 +204,8 @@ int main(int argc, char** argv) {
 		}
 	} else if (input.getOpMode() == DECOMPRESS) {
 		Decoder decoder;
-		try {
-			input.setBounds(8, input.getFileSize() - 24);
-			decoder.decode(input, *output, progress);
-		} catch (std::exception e) {
-			std::cerr << "Error decoding: " << e.what() << std::endl;
-			return EXIT_FAILURE;
-		}
+		input.setBounds(8, input.getFileSize() - 24);
+		decoder.decode(input, *output, progress);
 	}
 
 	if (benchmark)
