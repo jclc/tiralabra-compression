@@ -10,6 +10,7 @@
 #include <vector>
 #include "tempfilenames.hpp"
 #include <memory>
+#include <iostream>
 
 void Encoder::encode(Input& input, Output& output,
 	unsigned int bitSize,

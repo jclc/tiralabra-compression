@@ -67,7 +67,7 @@ void Input::setBounds(unsigned long start, unsigned long end) {
 }
 
 int Input::read(uint8_t *dest, int bufferSize) {
-	unsigned long bytesToRead = std::min(bufferSize, int(readEnd - ftell(filePointer)));
+	unsigned long bytesToRead = std::min((uint)bufferSize, uint(readEnd - ftell(filePointer)));
 	return fread(dest, sizeof(uint8_t), bytesToRead, filePointer);
 }
 
