@@ -41,7 +41,7 @@ If output file is not given, output will be printed to stdout.
 | `-h`   |           | Print help message |
 | `-v`   |           | Verbose output - Print file information and progress (don't use when writing to stdout) |
 | `-b`   |           | Benchmark mode - Print execution time in milliseconds |
-| `-w`   | word size | Define code word size in bits when decoding (either 12 or 16) |
+| `-w`   | word size | Define code word size in bits when encoding (either 12 or 16) |
 | `-i`   |           | Print file info - Do not operate on the file, only print info |
 | `-n`   |           | Null output - Discard output, useful for benchmarking without file I/O |
 
